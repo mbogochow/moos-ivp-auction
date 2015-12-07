@@ -26,3 +26,25 @@
 *.exe
 *.out
 *.app
+
+# ViM files
+*.swp
+
+# moos-ivp-extend files
+/bin
+#./build.sh    # modified
+#./CMakeLists.txt     # modified
+/build
+/data
+/lib
+/missions
+/README
+
+# Eclipse files
+.project
+.cproject
+.settings
+.metadata
+
+# custom files
+e.sh
