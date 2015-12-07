@@ -5,28 +5,49 @@
 #include <assert.h>
 #include <stdexcept>
 
-Graph::Graph()
+Graph::Graph(void)
 {
-  nodeCount = 0;
   id = 0;
-
   root = nullptr;
 }
 
-Graph::~Graph()
+Graph::~Graph(void)
 {
   if (root != nullptr)
   {
-
+    std::list<struct edge *>::iterator edgeIter;
+    std::list<struct node *>::iterator nodeIter;
+    for (edgeIter = edges.begin(); edgeIter != edges.end(); ++edgeIter)
+      deleteEdge(&edgeIter);
+    for (nodeIter = nodes.begin(); nodeIter != nodes.end(); ++nodeIter)
+    {
+      struct node *node = *nodeIter;
+      nodeIter = nodes.erase(nodeIter);
+      delete node;
+    }
 
     delete root;
   }
 }
 
 struct node *
-Graph::getNodes()
+Graph::getNodes(void) const
 {
   return root;
+}
+
+std::list<struct node *> *
+Graph::asList(void)
+{
+  // not great solution since exposes private object for modification
+  return &nodes;
+}
+
+std::list<struct edge *> *
+Graph::getEdges(void)
+{
+  // not great solution since exposes private object for modification
+  return &edges;
 }
 
 struct node *
@@ -36,9 +57,7 @@ Graph::addNode()
   {
     root = new struct node;
     initNode(root);
-
-    assert(nodeCount == 0);
-    nodeCount += 1;
+    nodes.push_back(root);
   }
   return root;
 }
@@ -55,7 +74,7 @@ Graph::addNode(struct node *connectedNode, const int cost)
   else
   {
     node = new struct node;
-    nodeCount += 1;
+    nodes.push_back(node);
     connectEdge(node, connectedNode, cost);
   }
 
@@ -79,6 +98,7 @@ Graph::connectEdge(struct node *node1, struct node *node2, const int cost)
     edge->node2 = node2;
     node1->edges.push_back(edge);
     node2->edges.push_back(edge);
+    edges.push_back(edge);
   }
 
   return edge;
@@ -137,25 +157,47 @@ Graph::disconnectEdge(struct edge *edge)
   return ret;
 }
 
-void deleteEdge(struct edge **edge)
+void
+Graph::deleteEdge(struct edge **edge)
 {
   struct node *node1 = (*edge)->node1;
   struct node *node2 = (*edge)->node2;
 
   node1->edges.remove(*edge);
   node2->edges.remove(*edge);
+  edges.remove(*edge);
   delete *edge;
+}
+
+std::list<struct edge *>::iterator
+Graph::deleteEdge(std::list<struct edge *>::iterator *edgeIter)
+{
+  struct edge *edge = **edgeIter;
+  struct node *node1 = edge->node1;
+  struct node *node2 = edge->node2;
+  std::list<struct edge *>::iterator ret;
+
+  node1->edges.remove(edge);
+  node2->edges.remove(edge);
+
+  ret = edges.erase(*edgeIter);
+  delete edge;
+  return ret;
 }
 
 bool
 Graph::contains(struct node * const node)
 {
-  bool ret = true;
+  bool ret = false;
 
-  if (root == nullptr)
-    ret = false;
-  else
-    ret = DFS(node);
+  if (root != nullptr)
+  {
+    ret = DFS([&] (struct node *onode, struct edge *edge) {
+      if (onode == node)
+        return false; // stop searching if found
+      return true;
+    });
+  }
 
   return ret;
 }
@@ -174,7 +216,8 @@ Graph::connected(struct node *node1, struct node *node2)
 }
 
 struct node *
-Graph::getOtherNode(const struct edge * const edge, const struct node * const node)
+Graph::getOtherNode(const struct edge * const edge,
+    const struct node * const node)
 {
   if (edge->node1 == node)
     return edge->node2;
@@ -202,12 +245,12 @@ Graph::initNode(struct node *node)
  * @param states the states of the nodes
  * @return true on success; false on failure (if a cycle is found)
  */
-bool
-Graph::DFS_visit(struct node * const node, struct node * const find,
-    bool &found, search_state * const states)
+template<typename DFS_func>
+static bool
+DFS_visit(struct node * node, struct edge *edge,
+    DFS_func dfs_func, search_state *states)
 {
   bool ret = true;
-  struct node *pnode;
 
   assert(node);
 
@@ -216,47 +259,49 @@ Graph::DFS_visit(struct node * const node, struct node * const find,
   else
   {
     states[node->id] = DISCOVERED;
-    for (std::list<struct edge *>::iterator it = node->edges.begin();
-        it != node->edges.end(); ++it)
+
+    // Call the provided function for each visited node
+    if ((ret = dfs_func(node, edge)) == true)
     {
-      pnode = getOtherNode((struct edge *)*it, node);
-      assert(pnode != nullptr);
-
-      if (states[pnode->id] == UNDISCOVERED)
+      for (std::list<struct edge *>::iterator it = node->edges.begin();
+          it != node->edges.end(); ++it)
       {
-        if (pnode == find)
-        {
-          found = true;
-          break;
-        }
+        struct node *pnode = Graph::getOtherNode((struct edge *)*it, node);
+        assert(pnode != nullptr);
 
-        if ((ret = DFS_visit(pnode, find, found, states)) == false)
-          break;
+        if (states[pnode->id] == UNDISCOVERED)
+        {
+          // Recurse through remaining nodes
+          if ((ret = DFS_visit(pnode, *it, dfs_func, states)) == false)
+            break;
+        }
       }
+
+      if (ret)
+        states[node->id] = FINISHED;
     }
-    if (ret)
-      states[node->id] = FINISHED;
   }
 
   return ret;
 } /* DFS_visit */
 
 /**
- * Perform a depth-first on the node list.  Topological sort output to out.
+ * Perform a depth-first on the node list.
  *
  * @param head the head of the list to perform DFS on
- * @param states the states of the nodes
+ * @param DFS_func function to call for each visited node
+ * @param data data to pass to DFS_func
  * @return true on success; false on failure
  */
-bool
-Graph::DFS(struct node * const node)
+template<typename DFS_func> bool
+Graph::DFS(DFS_func dfs_func)
 {
   bool ret = false;
   struct node *pnode;
   search_state *states;
 
-  states = new search_state[nodeCount];
-  std::fill(states, states + nodeCount, UNDISCOVERED);
+  states = new search_state[nodes.size()];
+  std::fill(states, states + nodes.size(), UNDISCOVERED);
 
   for (std::list<struct edge *>::iterator it = root->edges.begin();
       it != root->edges.end(); ++it)
@@ -266,7 +311,7 @@ Graph::DFS(struct node * const node)
 
     if (states[pnode->id] == UNDISCOVERED)
     {
-      if (DFS_visit(pnode, node, ret, states) == false || ret == true)
+      if ((ret = DFS_visit(pnode, *it, dfs_func, states)) == false)
         break;
     }
   }
