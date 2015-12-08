@@ -1,5 +1,5 @@
 #--------------------------------------------------------
-# The CMakeLists.txt for:              lib_behaviors-test
+# The CMakeLists.txt for:              lib
 # Author(s): Mike Bogochow                               
 #--------------------------------------------------------
 
@@ -18,6 +18,10 @@ endif (${WIN32})
 #                                                   graph
 #--------------------------------------------------------
 ADD_LIBRARY(graph SHARED 
-   graph.cpp graph.cpp)
+   graph.cpp)
+ADD_LIBRARY(heap SHARED 
+   heap.cpp)
+    
 TARGET_LINK_LIBRARIES(graph
+   heap
    ${SYSTEM_LIBS} )
