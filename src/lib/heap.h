@@ -10,6 +10,8 @@
 #ifndef MBOGO_HEAP_H_
 #define MBOGO_HEAP_H_
 
+#include "graph.h"
+
 #include <vector>
 #include <cstring>
 
@@ -69,14 +71,6 @@ public:
    * less than or equal to 0
    */
   bool build_min_heap(struct heap_node* const ary, const size_t ary_len);
-
-  /**
-   * Clean the heap.  Should be called before deallocating a built heap to avoid
-   * memory leaks.  Should not be called on a heap that has not been built using
-   * build_heap or else it may cause errors.
-   *
-   */
-  void clean_heap(void);
 
   /**
    * Pull the element at the given index up the tree until the invariant has
@@ -168,6 +162,12 @@ public:
   bool heap_sort(struct heap_node *ary, const size_t ary_len);
 
   size_t last_index(void);
+
+  bool prim_mst(Graph *g, std::list<struct heap_node *> &mst);
+
+  bool contains(void *data);
+
+  struct heap_node * getNode(void *data);
 
 private:
   /**

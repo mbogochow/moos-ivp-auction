@@ -14,7 +14,8 @@
 //#include <string.h>
 //#include <stdio.h>
 #include <assert.h>
-#include <algorithm>
+#include <algorithm>  // iter_swap
+#include <limits>     // infinity (Prim's)
 
 #if defined(HEAP_DEBUG) && HEAP_DEBUG > 0
 void print_heap(struct heap * const heap)
@@ -40,7 +41,14 @@ Heap::Heap(void)
 
 Heap::~Heap(void)
 {
-
+  struct heap_node *heap_node;
+  for (std::vector<struct heap_node *>::iterator it = nodes.begin();
+      it != nodes.end(); it++)
+  {
+    heap_node = *it;
+    nodes.erase(it);
+    delete heap_node;
+  }
 }
 
 size_t
@@ -100,13 +108,6 @@ Heap::exchange(const size_t index1, const size_t index2)
   return ret;
 } /* exchange */
 
-void
-Heap::clean_heap()
-{
-//  free(nodes);
-//  heap->last_index = -1;
-} /* clean_heap */
-
 bool
 Heap::is_smaller(const size_t index1, const size_t index2) const
 {
@@ -125,6 +126,42 @@ Heap::is_larger(const size_t index1, const size_t index2) const
   return nodes.data()[index1]->value > nodes.data()[index2]->value;
 } /* is_after */
 
+bool
+Heap::contains(void *data)
+{
+  bool ret = false;
+
+  for (std::vector<struct heap_node *>::iterator it = nodes.begin();
+      it != nodes.end(); it++)
+  {
+    if ((*it)->data == data)
+    {
+      ret = true;
+      break;
+    }
+  }
+
+  return ret;
+}
+
+struct heap_node *
+Heap::getNode(void *data)
+{
+  struct heap_node *ret = nullptr;
+
+  for (std::vector<struct heap_node *>::iterator it = nodes.begin();
+      it != nodes.end(); it++)
+  {
+    if ((*it)->data == data)
+    {
+      ret = *it;
+      break;
+    }
+  }
+
+  return ret;
+}
+
 size_t
 Heap::heap_size() const
 {
@@ -142,7 +179,6 @@ Heap::max_heapify(const size_t index)
 
   if (l <= heap_size() && is_larger(l, index))
     largest = l;
-
   else
     largest = index;
 
@@ -385,6 +421,57 @@ Heap::insert(struct heap_node * const element)
 } /* insert */
 
 bool
+Heap::prim_mst(Graph *g, std::list<struct node *> &mst)
+{
+  bool ret = true;
+  std::list<struct node *> *v = g->asList();
+
+  assert(nodes.empty());
+
+  for (std::list<struct node *>::iterator it = v->begin(); it != v->end(); it++)
+  {
+    struct heap_node *heap_node = new struct heap_node;
+    heap_node->data = *it;
+    heap_node->value = std::numeric_limits<float>::infinity();
+    nodes.push_back(heap_node);
+  }
+
+  (*nodes.begin())->value = 0;
+
+  while(!nodes.empty())
+  {
+    struct heap_node *u;
+    struct node *u_node;
+    std::list<struct edge *> edges;
+
+    if ((ret = extract_min(&u)) == false)
+      break;
+
+    u_node = (struct node *)u->data;
+    edges = u_node->edges;
+
+    for (std::list<struct edge *>::iterator it = edges.begin();
+        it != edges.end(); it++)
+    {
+      struct heap_node *v;
+      struct node *v_node = Graph::getOtherNode(*it, u_node);
+      assert(v_node != nullptr);
+
+      if ((v = getNode(v_node)) != nullptr)
+      {
+        if ((*it)->cost < v->value)
+        {
+          mst.push_back(v_node);
+
+        }
+      }
+    }
+  }
+
+  return ret;
+}
+
+bool
 Heap::extract_min(struct heap_node **min)
 {
   bool ret = false;
@@ -398,10 +485,13 @@ Heap::extract_min(struct heap_node **min)
 
   if (last_index() >= 0)
   {
+    struct heap_node *node;
 //    /* Overwrite first element with last.
 //     * Decrease the last index to effectively remove the last element */
     std::iter_swap(nodes.begin(), nodes.end());
+    node = *nodes.end();
     nodes.pop_back();
+    delete node;
 
 //    nodes.data()[0] = nodes.data()[heap->last_index--];
 //    nodes.data()[0]->index = 0;
@@ -419,3 +509,4 @@ Heap::extract_min(struct heap_node **min)
 
   return ret;
 } /* extract_min */
+
