@@ -14,7 +14,8 @@ INCLUDE_DIRECTORIES(${LOCAL_LIBRARY_DIRS})
 #============================================================================
 # List the subdirectories to build...
 #============================================================================
-ADD_SUBDIRECTORY(lib)
+#ADD_SUBDIRECTORY(lib)
+ADD_SUBDIRECTORY(pBidder)
 
 ##############################################################################
 #                           END of CMakeLists.txt
