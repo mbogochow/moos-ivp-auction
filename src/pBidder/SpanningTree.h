@@ -16,9 +16,15 @@ public:
 
   size_t get(size_t index);
 
+  /**
+   * Get the weight of traveling to the node at the given index from the
+   * node's parent according to the original graph.
+   */
+  mbogo_weight_t getWeight(size_t index);
+
 private:
-  typedef std::vector<boost::graph_traits<Graph>::vertex_descriptor> SpanningTree_t;
-  SpanningTree_t tree;
+  std::vector<Vertex> tree;
+  std::vector<mbogo_weight_t> weights;
 
   SpanningTree(size_t size);
 };

@@ -3,29 +3,28 @@
 #include "Path.h"
 #include "SpanningTree.h"
 
-Path::Path(size_t size)
+Path::Path(const size_t size)
 {
-  costs = new weight_t[size];
-  path.reserve(size);
+  length = size;
+  path.reserve(length);
 }
 
 Path::~Path(void)
 {
-  delete costs;
-  path.clear();
+//  path.clear();
 }
 
 /**
  * Recurser function for fromTree to do the search
  */
 static void fromTreeHelper(SpanningTree * const tree,
-    std::vector<int> * const path, std::size_t curr)
+    std::vector<Vertex> * const path, std::size_t curr)
 {
   for (std::size_t i = 0; i != tree->size(); i++)
   {
-    // Skip over any nodes that don't have current node as parent
-    // Therefore also skips previously visited nodes
-    if (tree->get(i) == curr && i != curr)
+    // Skip over any nodes that don't have current node as parent.
+    // Therefore also skips previously visited nodes.
+    if (i != curr && tree->get(i) == curr)
     {
       path->push_back(i);
       fromTreeHelper(tree, path, i);
@@ -43,4 +42,53 @@ Path::fromTree(SpanningTree *const tree)
   fromTreeHelper(tree, &newPath->path, curr);
 
   return newPath;
+}
+
+Path *
+Path::fromPath(std::vector<Vertex> path)
+{
+  Path *newPath = new Path(path.size());
+  newPath->path = path;
+  return newPath;
+}
+
+Path *
+Path::fromPair(std::pair<Vertex, Vertex> path)
+{
+  Path *newPath = new Path(2);
+  newPath->path.push_back(path.first);
+  newPath->path.push_back(path.second);
+  return newPath;
+}
+
+mbogo_weight_t
+Path::getTotalCost(Graph *const g)
+{
+  mbogo_weight_t cost = 0;
+
+  if (length == 0 || length == 1)
+    return 0;
+
+  EdgeDescriptor e;
+  bool found;
+  typename boost::property_map<Graph, boost::edge_weight_t >::type
+    weight = boost::get(boost::edge_weight, *g);
+  std::vector<Vertex>::iterator it = path.begin();
+  Vertex prevNode = *it++;
+
+  for (; it != path.end(); it++)
+  {
+    tie(e, found) = edge(prevNode, *it, *g);
+//    std::cout << "weight(" << prevNode << "," << *it << "):" << boost::get(weight, e) << std::endl;
+    cost += boost::get(weight, e);
+    prevNode = *it;
+  }
+
+  return cost;
+}
+
+std::vector<Vertex> *
+Path::data(void)
+{
+  return &path;
 }

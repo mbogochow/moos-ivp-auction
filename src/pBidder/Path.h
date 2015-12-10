@@ -18,9 +18,17 @@ public:
    */
   static Path * fromTree(SpanningTree *const tree);
 
+  static Path * fromPath(std::vector<Vertex> path);
+
+  static Path * fromPair(std::pair<Vertex, Vertex> path);
+
+  mbogo_weight_t getTotalCost(Graph *g);
+
+  std::vector<Vertex> * data(void);
+
 private:
-  std::vector<int> path;
-  weight_t *costs;
+  std::vector<Vertex> path;
+  size_t length;
 
   Path(const size_t size);
 };
