@@ -12,7 +12,7 @@ public:
 
   size_t size(void);
 
-  static SpanningTree * fromGraph(Graph *g);
+  static SpanningTree * fromGraph(UndirectedGraph *g);
 
   size_t get(size_t index);
 
@@ -21,6 +21,8 @@ public:
    * node's parent according to the original graph.
    */
   mbogo_weight_t getWeight(size_t index);
+
+  void print(void) const;
 
 private:
   std::vector<Vertex> tree;

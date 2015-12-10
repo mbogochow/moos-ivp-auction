@@ -22,9 +22,11 @@ public:
 
   static Path * fromPair(std::pair<Vertex, Vertex> path);
 
-  mbogo_weight_t getTotalCost(Graph *g);
+  mbogo_weight_t getTotalCost(UndirectedGraph *g);
 
   std::vector<Vertex> * data(void);
+
+  void print(void) const;
 
 private:
   std::vector<Vertex> path;

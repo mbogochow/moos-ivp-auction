@@ -3,6 +3,8 @@
 #include "Path.h"
 #include "SpanningTree.h"
 
+#include <iostream>
+
 Path::Path(const size_t size)
 {
   length = size;
@@ -62,7 +64,7 @@ Path::fromPair(std::pair<Vertex, Vertex> path)
 }
 
 mbogo_weight_t
-Path::getTotalCost(Graph *const g)
+Path::getTotalCost(UndirectedGraph *const g)
 {
   mbogo_weight_t cost = 0;
 
@@ -71,7 +73,7 @@ Path::getTotalCost(Graph *const g)
 
   EdgeDescriptor e;
   bool found;
-  typename boost::property_map<Graph, boost::edge_weight_t >::type
+  typename boost::property_map<UndirectedGraph, boost::edge_weight_t >::type
     weight = boost::get(boost::edge_weight, *g);
   std::vector<Vertex>::iterator it = path.begin();
   Vertex prevNode = *it++;
@@ -91,4 +93,14 @@ std::vector<Vertex> *
 Path::data(void)
 {
   return &path;
+}
+
+void
+Path::print(void) const
+{
+  for (std::vector<Vertex>::const_iterator it = path.begin(); it != path.end();
+      it++)
+  {
+    std::cerr << *it << std::endl;
+  }
 }

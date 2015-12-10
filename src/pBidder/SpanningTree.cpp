@@ -5,6 +5,8 @@
 
 #include <boost/graph/prim_minimum_spanning_tree.hpp>
 
+#include <iostream>
+
 SpanningTree::SpanningTree(const size_t size)
 {
   tree.resize(size); // must be resize not reserve for prim's alg.
@@ -35,24 +37,21 @@ SpanningTree::getWeight(const size_t index)
 }
 
 SpanningTree *
-SpanningTree::fromGraph(Graph *const g)
+SpanningTree::fromGraph(UndirectedGraph *const g)
 {
   SpanningTree *newTree = new SpanningTree(num_vertices(*g));
   prim_minimum_spanning_tree(*g, &newTree->tree[0]);
-
-
-
-  // add weights from graph edges
-//  boost::graph_traits<Graph>::edge_iterator ei, ei_end;
-////  boost::property_map<Graph, boost::edge_weight_t>::const_type weight = boost::get(
-////      boost::edge_weight, *g);
-//  boost::property_map<Graph, boost::edge_weight_t>::type weight = boost::get(
-//      boost::edge_weight, *g);
-//  for (tie(ei, ei_end) = boost::edges(*g); ei != ei_end; ++ei)
-//  {
-//    std::cout << "(" << source(*ei, *g) << "," << target(*ei, *g) << ")="
-//        << boost::get(weight, ei) << std::endl;
-//  }
-
   return newTree;
+}
+
+void
+SpanningTree::print(void) const
+{
+  for (size_t i = 0; i != tree.size(); ++i)
+  {
+    if (tree.data()[i] != i)
+      std::cout << "parent[" << i << "] = " << tree.data()[i] << std::endl;
+    else
+      std::cout << "parent[" << i << "] = no parent" << std::endl;
+  }
 }
