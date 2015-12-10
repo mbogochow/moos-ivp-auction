@@ -23,29 +23,29 @@
 #include <algorithm> // std::remove
 #include <limits>
 
-#define a 0
-#define b 1
-#define c 2
-#define d 3
-#define e 4
-#define f 5
-#define _g 6
-#define h 7
-#define _i 8
+//#define _a 0
+//#define _b 1
+//#define _c 2
+//#define _d 3
+//#define _e 4
+//#define _f 5
+//#define _g 6
+//#define _h 7
+//#define _i 8
 
-static const size_t __num_nodes = 9;
-static const size_t __num_edges = 36;
-static Edge __edges[__num_edges] = {
-    Edge(a, b), Edge(a, c), Edge(a, d), Edge(a, e), Edge(a, f), Edge(a, _g), Edge(a, h), Edge(a, _i),
-    Edge(b, c), Edge(b, d), Edge(b, e), Edge(b, f), Edge(b, _g), Edge(b, h), Edge(b, _i),
-    Edge(c, d), Edge(c, e), Edge(c, f), Edge(c, _g), Edge(c, h), Edge(c, _i),
-    Edge(d, e), Edge(d, f), Edge(d, _g), Edge(d, h), Edge(d, _i),
-    Edge(e, f), Edge(e, _g), Edge(e, h), Edge(e, _i),
-    Edge(f, _g), Edge(f, h), Edge(f, _i),
-    Edge(_g, h), Edge(_g, _i),
-    Edge(h, _i)
+const size_t __num_nodes = 9;
+const size_t __num_edges = 36;
+Edge __edges[__num_edges] = {
+    Edge(_a, _b), Edge(_a, _c), Edge(_a, _d), Edge(_a, _e), Edge(_a, _f), Edge(_a, _g), Edge(_a, _h), Edge(_a, _i),
+    Edge(_b, _c), Edge(_b, _d), Edge(_b, _e), Edge(_b, _f), Edge(_b, _g), Edge(_b, _h), Edge(_b, _i),
+    Edge(_c, _d), Edge(_c, _e), Edge(_c, _f), Edge(_c, _g), Edge(_c, _h), Edge(_c, _i),
+    Edge(_d, _e), Edge(_d, _f), Edge(_d, _g), Edge(_d, _h), Edge(_d, _i),
+    Edge(_e, _f), Edge(_e, _g), Edge(_e, _h), Edge(_e, _i),
+    Edge(_f, _g), Edge(_f, _h), Edge(_f, _i),
+    Edge(_g, _h), Edge(_g, _i),
+    Edge(_h, _i)
 };
-static int __weights[__num_edges] = {
+int __weights[__num_edges] = {
     4,       8,       11,      8,      7,        4,       2,      9,
     14,      10,      2,       1,      6,        7,       4,
     8,       11,      8,       7,      4,        2,
@@ -76,7 +76,9 @@ int main(int argc, char **argv)
   // each round of bidding
   for (Vertex i = 0; i < __num_nodes; i++)
   {
-    std::pair<Vertex, mbogo_weight_t> currentBid = std::make_pair(std::numeric_limits<Vertex>::max(), std::numeric_limits<mbogo_weight_t>::max());
+    std::pair<Vertex, mbogo_weight_t> currentBid = std::make_pair(
+        std::numeric_limits<Vertex>::max(),
+        std::numeric_limits<mbogo_weight_t>::max());
 
 //std::cerr << "~~~ Round " << i+1 << std::endl;
     // each unallocated target
@@ -89,7 +91,6 @@ int main(int argc, char **argv)
       mbogo_weight_t bid;
       std::vector<Vertex> possibleAllocation;
 
-      possibleAllocation.reserve(__num_nodes);
       possibleAllocation = allocated;
 //std::cerr << "Adding " << *t << " for possible allocation" << std::endl;
       possibleAllocation.push_back(*t);

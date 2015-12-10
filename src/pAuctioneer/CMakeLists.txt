@@ -1,5 +1,5 @@
 #--------------------------------------------------------
-# The CMakeLists.txt for:                         pBidder
+# The CMakeLists.txt for:                     pAuctioneer
 # Author(s):                                Mike Bogochow
 #--------------------------------------------------------
 
@@ -18,12 +18,12 @@ endif (${WIN32})
 
 SET(SRC
    main.cpp
-   Bidder.cpp
+   Auctioneer.cpp
 )
 
-ADD_EXECUTABLE(pBidder ${SRC})
+ADD_EXECUTABLE(pAuctioneer ${SRC})
 
-TARGET_LINK_LIBRARIES(pBidder
+TARGET_LINK_LIBRARIES(pAuctioneer
    ${MOOS_LIBRARIES}
    Graphs
    Auction

@@ -15,7 +15,7 @@ public:
   ~Graph(void);
 
   UndirectedGraph * getGraph(void) const { return g; }
-  size_t getNumNodes(void) const { return numNodes; }
+  size_t getNumVertices(void) const { return numNodes; }
   size_t getNumEdges(void) const { return edges.size(); }
   void print(void) const { print_graph(*g); }
 

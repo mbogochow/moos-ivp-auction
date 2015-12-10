@@ -70,7 +70,7 @@ Graph::getSubgraph(std::vector<Vertex> includedVertices)
   Graph *subgraph = new Graph(includedVertices.size());
 //  UndirectedGraph *subgraph = new UndirectedGraph(includedVertices.size());
 
-  const Vertex def = std::numeric_limits<Vertex>::max();
+  const Vertex def = MAX_VERTEX;
   size_t numEdges = this->edges.size();
 
   // Add all edges from original graph to subgraph which connect nodes

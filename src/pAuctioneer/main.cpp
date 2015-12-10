@@ -7,7 +7,7 @@
  * pBidder main
  */
 
-#include "Bidder.h"
+#include "Auctioneer.h"
 
 int main(int argc, char **argv)
 {

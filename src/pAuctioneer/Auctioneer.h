@@ -2,26 +2,23 @@
  * @author Mike Bogochow
  * @version 2.4.0, Dec 8, 2015
  *
- * @file Bidder.h
+ * @file Auctioneer.h
  *
- * Bidder class
+ * Auctioneer class
  */
 
-#ifndef MBOGO_BIDDER_H_
-#define MBOGO_BIDDER_H_
+#ifndef MBOGO_AUCTIONEER_H_
+#define MBOGO_AUCTIONEER_H_
 
 #include "MOOS/libMOOS/App/MOOSApp.h"
-
-#include "../lib_graphs/Graph.h"
-#include "../lib_graphs/defs.h"
 
 #include "../lib_auction/AuctionDefs.h"
 
 #include <string>
 
-class Bidder : public CMOOSApp {
-  Bidder(void);
-  ~Bidder(void);
+class Auctioneer : public CMOOSApp {
+  Auctioneer(void);
+  ~Auctioneer(void);
 
   bool OnNewMail(MOOSMSG_LIST &NewMail);
   bool OnStartUp(void);
@@ -35,18 +32,10 @@ protected:
   unsigned long int m_iterations;
 
 private:
-  Graph *g;
-  std::vector<Vertex> allocated;
-  std::vector<Vertex> unallocated;
-  mbogo_weight_t rtc;
-  int id;
-
   size_t roundNumber;
-  bool roundUpdated;
-  bool winnerUpdated;
-  struct WinningBid winningBid;
-
-  void performBiddingRound(void);
+  int numberOfBidders;
+  Bid *bids;
+  int numReceivedBids;
 };
 
-#endif /* MBOGO_BIDDER_H_ */
+#endif /* MBOGO_AUCTIONEER_H_ */
