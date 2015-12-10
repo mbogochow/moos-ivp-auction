@@ -19,6 +19,7 @@ endif (${WIN32})
 SET(SRC
    main.cpp
    Bidder.cpp
+   Bidder_Info.cpp
 )
 
 ADD_EXECUTABLE(pBidder ${SRC})

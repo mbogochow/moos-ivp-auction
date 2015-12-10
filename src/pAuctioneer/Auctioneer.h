@@ -16,7 +16,9 @@
 
 #include <string>
 
-class Auctioneer : public CMOOSApp {
+class Auctioneer : public CMOOSApp
+{
+public:
   Auctioneer(void);
   ~Auctioneer(void);
 

@@ -1,0 +1,10 @@
+//------------------------------------------------
+// pAuctioneer config block
+
+ProcessConfig = pBidder
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  NumBidders = 1    // The number of bidders in the community
+}

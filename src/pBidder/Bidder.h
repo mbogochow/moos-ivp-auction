@@ -19,7 +19,9 @@
 
 #include <string>
 
-class Bidder : public CMOOSApp {
+class Bidder : public CMOOSApp
+{
+public:
   Bidder(void);
   ~Bidder(void);
 

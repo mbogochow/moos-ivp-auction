@@ -19,6 +19,7 @@ endif (${WIN32})
 SET(SRC
    main.cpp
    Auctioneer.cpp
+   Auctioneer_Info.cpp
 )
 
 ADD_EXECUTABLE(pAuctioneer ${SRC})

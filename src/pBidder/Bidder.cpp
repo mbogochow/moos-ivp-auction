@@ -184,28 +184,15 @@ Bidder::OnStartUp(void)
 {
   bool ret = true;
 
-  STRING_LIST sParams;
-  m_MissionReader.GetConfiguration(GetAppName(), sParams);
-
-  STRING_LIST::iterator p;
-  for(p = sParams.begin(); p != sParams.end(); p++)
+  std::string id;
+  if (!m_MissionReader.GetConfigurationParam("AgentID", id))
   {
-//      string sLine     = *p;
-//      string sVarName  = MOOSChomp(sLine, "=");
-//      sLine = stripBlankEnds(sLine);
-//
-//      if(MOOSStrCmp(sVarName, "INCOMING_VAR")) {
-//        if(!strContains(sLine, " "))
-//    m_incoming_var = stripBlankEnds(sLine);
-//      }
-//
-//      else if(MOOSStrCmp(sVarName, "OUTGOING_VAR")) {
-//        if(!strContains(sLine, " "))
-//    m_outgoing_var = stripBlankEnds(sLine);
-//      }
-
-    // TODO set id
+    MOOSTrace("Warning: parameter 'AgentID' not specified.\n");
+    MOOSTrace("Terminating\n");
+    exit(-1);
   }
+  else
+    this->id = boost::lexical_cast<int>(id);
 
   return ret;
 }

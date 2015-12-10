@@ -14,6 +14,7 @@
 #include "MBUtils.h"
 
 #include <boost/algorithm/string/predicate.hpp> // starts_with
+#include <boost/lexical_cast.hpp>
 
 Auctioneer::Auctioneer(void)
 {
@@ -21,7 +22,7 @@ Auctioneer::Auctioneer(void)
   m_tally_sent = 0;
   m_iterations = 0;
 
-  roundNumber = -1;
+  roundNumber = 0;
   numberOfBidders = -1;
   bids = nullptr;
   numReceivedBids = 0;
@@ -98,26 +99,17 @@ Auctioneer::OnStartUp(void)
 {
   bool ret = true;
 
-  STRING_LIST sParams;
-  m_MissionReader.GetConfiguration(GetAppName(), sParams);
-
-  STRING_LIST::iterator p;
-  for(p = sParams.begin(); p != sParams.end(); p++)
+  std::string numBidders;
+  if (!m_MissionReader.GetConfigurationParam("NumBidders", numBidders))
   {
-//      string sLine     = *p;
-//      string sVarName  = MOOSChomp(sLine, "=");
-//      sLine = stripBlankEnds(sLine);
-//
-//      if(MOOSStrCmp(sVarName, "INCOMING_VAR")) {
-//        if(!strContains(sLine, " "))
-//    m_incoming_var = stripBlankEnds(sLine);
-//      }
-//
-//      else if(MOOSStrCmp(sVarName, "OUTGOING_VAR")) {
-//        if(!strContains(sLine, " "))
-//    m_outgoing_var = stripBlankEnds(sLine);
-//      }
-    // TODO set number of bidders
+    MOOSTrace("Warning: parameter 'NumBidders' not specified.\n");
+    MOOSTrace("Terminating\n");
+    exit(-1);
+  }
+  else
+  {
+    this->numberOfBidders = boost::lexical_cast<int>(numBidders);
+    this->bids = new Bid[this->numberOfBidders];
   }
 
   return ret;

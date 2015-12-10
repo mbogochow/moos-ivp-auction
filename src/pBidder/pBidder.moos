@@ -1,0 +1,11 @@
+//------------------------------------------------
+// pBidder config block
+
+ProcessConfig = pBidder
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  AgentID = 0    // ID of agent; must be unique across all agents in community
+                 // and IDs must be sequential
+}
