@@ -7,6 +7,18 @@
 
 #include "../lib_graphs/defs.h"
 
+#include "DebugPrinter.h"
+
+#include "MOOS/libMOOS/App/ClientDefines.h"
+#include "MOOS/libMOOS/Comms/MOOSCommClient.h"
+#ifdef ASYNCHRONOUS_CLIENT
+#include "MOOS/libMOOS/Comms/MOOSAsyncCommClient.h"
+namespace Poco
+{
+class Event;
+}
+#endif
+
 const std::string MVAR_BID_WINNER = "BID_WINNER";
 const std::string MVAR_BID_START  = "BID_START";
 const std::string MVAR_BID_HEADER = "BID_";

@@ -13,11 +13,13 @@
 #include "MOOS/libMOOS/App/MOOSApp.h"
 
 #include "../lib_auction/AuctionDefs.h"
-#include "../lib_auction/DebugPrinter.h"
+#include "../lib_auction/AuctionMOOSApp.h"
+
+#include <boost/lexical_cast.hpp>
 
 #include <string>
 
-class Auctioneer : public CMOOSApp
+class Auctioneer : public AuctionMOOSApp
 {
 public:
   Auctioneer(void);
@@ -29,16 +31,11 @@ public:
   void RegisterVariables(void);
   bool OnConnectToServer(void);
 
-protected:
-  unsigned long int m_iterations;
-
 private:
   size_t roundNumber;
   int numberOfBidders;
   Bid *bids;
   int numReceivedBids;
-
-  DebugPrinter dp;
 };
 
 #endif /* MBOGO_AUCTIONEER_H_ */

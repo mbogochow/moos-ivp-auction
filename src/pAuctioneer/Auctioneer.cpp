@@ -36,10 +36,9 @@ Auctioneer::~Auctioneer(void)
 bool
 Auctioneer::OnNewMail(MOOSMSG_LIST &NewMail)
 {
-  bool ret = true;
+  bool ret = AuctionMOOSApp::OnNewMail(NewMail);
 
-  dp.dprintf(LVL_MAX_VERB, "OnNewMail()\n");
-
+  dp.dprintf(LVL_MID_VERB, "roundNum < numNodes (%lu < %lu)?\n", roundNumber, __num_nodes);
   if (roundNumber < __num_nodes) //TODO come up with better solution of stopping auctioneer
   {
     MOOSMSG_LIST::reverse_iterator p;
@@ -63,21 +62,13 @@ Auctioneer::OnNewMail(MOOSMSG_LIST &NewMail)
 bool
 Auctioneer::Iterate(void)
 {
-  bool ret = true;
+  bool ret = AuctionMOOSApp::Iterate();
 
-  m_iterations += 1;
-  dp.dprintf(LVL_MID_VERB, "Iterate() #%u\n", m_iterations);
-
+  dp.dprintf(LVL_MID_VERB, "roundNum < numNodes (%lu < %lu)?\n", roundNumber, __num_nodes);
   if (roundNumber < __num_nodes) //TODO come up with better solution of stopping auctioneer
   {
     if (roundNumber == 0)
-    {
-      if (!Notify(MVAR_BID_START, ++roundNumber))
-      {
-        MOOSTrace("ERROR: Failed to write %s=%s to MOOSDB\n",
-            MVAR_BID_START.c_str(), roundNumber);
-      }
-    }
+      doNotify(MVAR_BID_START, ++roundNumber);
     else if (numReceivedBids == numberOfBidders)
     { // All bids received for round
       WinningBid winner = { 0, MAX_VERTEX, MAX_WEIGHT };
@@ -93,17 +84,8 @@ Auctioneer::Iterate(void)
       }
 
       // Send winner
-      if (!Notify(MVAR_BID_WINNER, winningBidToString(winner)))
-      {
-        MOOSTrace("ERROR: Failed to write %s=%s to MOOSDB\n",
-            MVAR_BID_WINNER.c_str(), winningBidToString(winner).c_str());
-      }
-
-      if (!Notify(MVAR_BID_START, ++roundNumber))
-      {
-        MOOSTrace("ERROR: Failed to write %s=%s to MOOSDB\n",
-            MVAR_BID_START.c_str(), roundNumber);
-      }
+      doNotify(MVAR_BID_WINNER, winningBidToString(winner));
+      doNotify(MVAR_BID_START, ++roundNumber);
 
       numReceivedBids = 0;
     }
@@ -115,14 +97,15 @@ Auctioneer::Iterate(void)
 bool
 Auctioneer::OnStartUp(void)
 {
-  bool ret = true;
+  bool ret;
 
   // Read the DebugOutput configuration field
   int debugLevel;
   if (!m_MissionReader.GetConfigurationParam("DebugOutput", debugLevel))
     debugLevel = LVL_OFF;
   dp.setLevel((DebugLevel)debugLevel);
-  dp.dprintf(LVL_MAX_VERB, "OnStartup()\n");
+
+  ret = AuctionMOOSApp::OnStartUp();
 
   if (!m_MissionReader.GetConfigurationParam("NumBidders", numberOfBidders))
   {
@@ -139,9 +122,9 @@ Auctioneer::OnStartUp(void)
 bool
 Auctioneer::OnConnectToServer(void)
 {
-  dp.dprintf(LVL_MAX_VERB, "OnConnectToServer()\n");
+  bool ret = AuctionMOOSApp::OnConnectToServer();
   RegisterVariables();
-  return true;
+  return ret;
 }
 
 void

@@ -51,10 +51,9 @@ Bidder::~Bidder(void)
 bool
 Bidder::OnNewMail(MOOSMSG_LIST &NewMail)
 {
-  bool ret = true;
+  bool ret = AuctionMOOSApp::OnNewMail(NewMail);
 
-  dp.dprintf(LVL_MAX_VERB, "OnNewMail()\n");
-
+  dp.dprintf(LVL_MID_VERB, "roundNum < numNodes (%lu < %lu)?\n", roundNumber, g->getNumVertices());
   if (roundNumber < g->getNumVertices()) //TODO come up with better solution of stopping auctioneer
   {
     MOOSMSG_LIST::reverse_iterator p;
@@ -85,11 +84,9 @@ Bidder::OnNewMail(MOOSMSG_LIST &NewMail)
 bool
 Bidder::Iterate(void)
 {
-  bool ret = true;
+  bool ret = AuctionMOOSApp::Iterate();
 
-  m_iterations += 1;
-  dp.dprintf(LVL_MID_VERB, "Iterate() #%u\n", m_iterations);
-
+  dp.dprintf(LVL_MID_VERB, "roundNum < numNodes (%lu < %lu)?\n", roundNumber, g->getNumVertices());
   if (roundNumber < g->getNumVertices()) //TODO come up with better solution of stopping auctioneer
   {
     if (winnerUpdated)
@@ -186,25 +183,21 @@ Bidder::performBiddingRound(void)
       && currentBid.second != MAX_WEIGHT);
 
   // Send bid
-//  f_Comms->writeMsg(MVAR_BID_HEADER + intToString(id), bidToString(currentBid));
-  if (!Notify(getBidVar(id), bidToString(currentBid)))
-  {
-    MOOSTrace("ERROR: Failed to write %s=%s to MOOSDB\n", getBidVar(id).c_str(),
-        bidToString(currentBid).c_str());
-  }
+  doNotify(getBidVar(id), bidToString(currentBid));
 }
 
 bool
 Bidder::OnStartUp(void)
 {
-  bool ret = true;
+  bool ret;
 
   // Read the DebugOutput configuration field
   int debugLevel;
   if (!m_MissionReader.GetConfigurationParam("DebugOutput", debugLevel))
     debugLevel = LVL_OFF;
   dp.setLevel((DebugLevel)debugLevel);
-  dp.dprintf(LVL_MAX_VERB, "OnStartup()\n");
+
+  ret = AuctionMOOSApp::OnStartUp();
 
   // Read the AgentID configuration field
   std::string id;
@@ -223,9 +216,9 @@ Bidder::OnStartUp(void)
 bool
 Bidder::OnConnectToServer(void)
 {
-  dp.dprintf(LVL_MAX_VERB, "OnConnectToServer()\n");
+  bool ret = AuctionMOOSApp::OnConnectToServer();
   RegisterVariables();
-  return true;
+  return ret;
 }
 
 void

@@ -16,11 +16,13 @@
 #include "../lib_graphs/defs.h"
 
 #include "../lib_auction/AuctionDefs.h"
-#include "../lib_auction/DebugPrinter.h"
+#include "../lib_auction/AuctionMOOSApp.h"
+
+#include <boost/lexical_cast.hpp>
 
 #include <string>
 
-class Bidder : public CMOOSApp
+class Bidder : public AuctionMOOSApp
 {
 public:
   Bidder(void);
@@ -31,9 +33,6 @@ public:
   bool Iterate(void);
   void RegisterVariables(void);
   bool OnConnectToServer(void);
-
-protected:
-  unsigned int m_iterations;
 
 private:
   Graph *g;
@@ -49,7 +48,6 @@ private:
 
   void performBiddingRound(void);
 
-  DebugPrinter dp;
 };
 
 #endif /* MBOGO_BIDDER_H_ */

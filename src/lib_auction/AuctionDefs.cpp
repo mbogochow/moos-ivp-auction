@@ -2,6 +2,8 @@
 
 #include "../lib_graphs/defs.h"
 
+#include "DebugPrinter.h"
+
 #include "AuctionDefs.h"
 
 #include <boost/lexical_cast.hpp>
