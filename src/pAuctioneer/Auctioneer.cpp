@@ -110,6 +110,8 @@ Auctioneer::OnStartUp(void)
     debugLevel = LVL_OFF;
   dp.setLevel((DebugLevel)debugLevel);
 
+  MOOSTrace("dbgLvl: %i\n", debugLevel);
+
   ret = AuctionMOOSApp::OnStartUp();
 
   if (!m_MissionReader.GetConfigurationParam("NumBidders", numberOfBidders))
@@ -120,6 +122,10 @@ Auctioneer::OnStartUp(void)
   }
   else
     this->bids = new Bid[numberOfBidders];
+
+  MOOSTrace("NumBidders: %i\n", numberOfBidders);
+
+  RegisterVariables();
 
   return ret;
 }
