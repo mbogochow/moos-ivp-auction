@@ -9,19 +9,11 @@
 
 #include "DebugPrinter.h"
 
-#include "MOOS/libMOOS/App/ClientDefines.h"
-#include "MOOS/libMOOS/Comms/MOOSCommClient.h"
-#ifdef ASYNCHRONOUS_CLIENT
-#include "MOOS/libMOOS/Comms/MOOSAsyncCommClient.h"
-namespace Poco
-{
-class Event;
-}
-#endif
-
-const std::string MVAR_BID_WINNER = "BID_WINNER";
-const std::string MVAR_BID_START  = "BID_START";
-const std::string MVAR_BID_HEADER = "BID_";
+const std::string MVAR_BID_WINNER  = "BID_WINNER";
+const std::string MVAR_BID_START   = "BID_START";
+const std::string MVAR_BID_HEADER  = "BID_";
+const std::string MVAR_PATH_HEADER = "PATH_UPDATE_";
+const std::string MVAR_PATH        = "polygon";
 
 typedef struct WinningBid
 {
@@ -32,11 +24,20 @@ typedef struct WinningBid
 
 typedef std::pair<Vertex, mbogo_weight_t> Bid;
 
+template<typename U, typename V>
+std::string pairToString(std::pair<U,V> pair);
+template<typename U, typename V>
+std::pair<U, V> pairFromString(std::string str);
+
 std::string bidToString(Bid bid);
 Bid bidFromString(std::string str);
 std::string winningBidToString(WinningBid bid);
 WinningBid winningBidFromString(std::string str);
 int getBidder(std::string bidHeader);
+std::string getVar(std::string header, int id);
 std::string getBidVar(int id);
+std::string getPathVar(int id);
+
+std::string pathToString(Loc locs[], size_t numLocs);
 
 #endif /*AUCTION_DEFS_H_*/

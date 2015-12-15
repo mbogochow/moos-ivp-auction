@@ -24,7 +24,7 @@ SpanningTree::size(void)
   return tree.size();
 }
 
-size_t
+Vertex
 SpanningTree::get(const size_t index)
 {
   return tree.data()[index];
@@ -54,4 +54,18 @@ SpanningTree::print(void) const
     else
       std::cout << "parent[" << i << "] = no parent" << std::endl;
   }
+}
+
+std::string
+SpanningTree::toString(void) const
+{
+  std::ostringstream os;
+  std::streambuf *coutbuf = std::cout.rdbuf();
+  std::cout.rdbuf(os.rdbuf());
+
+  print();
+
+  std::cout.rdbuf(coutbuf);
+
+  return os.str();
 }

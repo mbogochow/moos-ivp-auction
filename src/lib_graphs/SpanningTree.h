@@ -10,11 +10,14 @@ class SpanningTree
 public:
   ~SpanningTree(void);
 
-  size_t size(void);
-
+  /** Construct a spanning tree from the given graph using Prim's Algorithm. */
   static SpanningTree * fromGraph(UndirectedGraph *g);
 
-  size_t get(size_t index);
+  /** Get the size of the tree (the number of vertices) */
+  size_t size(void);
+
+  /** Get the vertex at the given index in the tree. */
+  Vertex get(size_t index);
 
   /**
    * Get the weight of traveling to the node at the given index from the
@@ -22,7 +25,14 @@ public:
    */
   mbogo_weight_t getWeight(size_t index);
 
+  /** Prints the tree to std::cout */
   void print(void) const;
+
+  /**
+   * Convert the tree to a string with the same formatting as the print
+   * function.
+   */
+  std::string toString(void) const;
 
 private:
   std::vector<Vertex> tree;

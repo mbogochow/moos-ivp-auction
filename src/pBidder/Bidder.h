@@ -46,8 +46,9 @@ private:
   bool winnerUpdated;
   struct WinningBid winningBid;
 
-  void performBiddingRound(void);
+  static const DebugLevel LVL_BID = LVL_MAX_VERB;
 
+  void performBiddingRound(void);
 };
 
 #endif /* MBOGO_BIDDER_H_ */

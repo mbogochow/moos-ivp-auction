@@ -14,12 +14,27 @@ public:
   Graph(Graph *other);
   ~Graph(void);
 
+  /** Get pointer to the underlying graph */
   UndirectedGraph * getGraph(void) const { return g; }
+
+  /** Get number of vertices in graph */
   size_t getNumVertices(void) const { return numNodes; }
+
+  /** Get number of edges in graph */
   size_t getNumEdges(void) const { return edges.size(); }
+
+  /** Prints the graph to std::cout */
   void print(void) const { print_graph(*g); }
 
+  /**
+   * Get a subgraph of this graph covering the given vertices.
+   */
   Graph * getSubgraph(std::vector<Vertex> includedVertices);
+
+  /**
+   * Converts the graph to a string with the same format as the print function.
+   */
+  std::string toString(void) const;
 
 private:
   UndirectedGraph *g;

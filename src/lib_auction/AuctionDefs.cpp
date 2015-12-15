@@ -30,36 +30,61 @@ int __weights[__num_edges] = {
     11,      8,       7,
     4,       2,
     9 };
+Loc __locations[__num_nodes] = {
+    Loc(0.5, 0), Loc(1, 1), Loc(2, 1), Loc(3, 1),
+    Loc(4, 0), Loc(3, -1), Loc(2, -1), Loc(1, -1), Loc(1.5, 0)
+};
+
+std::string pathToString(Loc path[], const size_t pathSize)
+{
+  std::stringstream ss;
+  size_t i;
+
+  // Cycle through all but last one
+  for (i = 0; i < pathSize - 1; i++)
+    ss << path[i].first << "," << path[i].second << ":";
+
+  // Finish with last one
+  ss << path[i].first << "," << path[i].second;
+
+  return ss.str();
+}
+
+template<typename U, typename V>
+std::string pairToString(std::pair<U,V> pair)
+{
+  std::stringstream ss;
+  ss << pair.first << "," << pair.second;
+  return ss.str();
+}
+
+template<typename U, typename V>
+std::pair<U, V> pairFromString(std::string str)
+{
+  std::pair<U,V> pair;
+  std::vector<std::string> strs;
+  boost::split(strs, str, boost::is_any_of(","));
+  pair = std::make_pair(
+      boost::lexical_cast<U>(strs[0]),
+      boost::lexical_cast<V>(strs[1]));
+  return pair;
+}
 
 std::string bidToString(Bid bid)
-{ // TODO reimplement for efficiency
-  std::string str;
-  str.append(boost::lexical_cast<std::string>(bid.first));
-  str.append(",");
-  str.append(boost::lexical_cast<std::string>(bid.second));
-  return str;
+{
+  return pairToString(bid);
 }
 
 Bid bidFromString(std::string str)
 {
-  Bid bid;
-  std::vector<std::string> strs;
-  boost::split(strs, str, boost::is_any_of(","));
-  bid = std::make_pair(
-      boost::lexical_cast<Vertex>(strs[0]),
-      boost::lexical_cast<mbogo_weight_t>(strs[1]));
-  return bid;
+  return (Bid)pairFromString<Vertex,mbogo_weight_t>(str);
 }
 
 std::string winningBidToString(WinningBid bid)
-{ // TODO reimplement for efficiency
-  std::string str;
-  str.append(boost::lexical_cast<std::string>(bid.winner));
-  str.append(",");
-  str.append(boost::lexical_cast<std::string>(bid.target));
-  str.append(",");
-  str.append(boost::lexical_cast<std::string>(bid.bid));
-  return str;
+{
+  std::stringstream ss;
+  ss << bid.winner << "," << bid.target << "," << bid.bid;
+  return ss.str();
 }
 
 WinningBid winningBidFromString(std::string str)
@@ -84,11 +109,20 @@ int getBidder(std::string bidHeader)
   return bidder;
 }
 
-std::string getBidVar(const int id)
+std::string getVar(std::string header, const int id)
 {
   std::stringstream ss;
-
-  ss << MVAR_BID_HEADER << id;
-
+  ss << header << id;
   return ss.str();
 }
+
+std::string getBidVar(const int id)
+{
+  return getVar(MVAR_BID_HEADER, id);
+}
+
+std::string getPathVar(int id)
+{
+  return getVar(MVAR_PATH_HEADER, id);
+}
+

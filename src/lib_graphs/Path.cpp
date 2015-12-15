@@ -89,6 +89,13 @@ Path::getTotalCost(UndirectedGraph *const g)
   return cost;
 }
 
+void
+Path::getLocations(Loc *locations, Loc *locs)
+{
+  for (size_t i = 0; i < length; i++)
+    locs[i] = locations[path.data()[i]];
+}
+
 std::vector<Vertex> *
 Path::data(void)
 {
@@ -103,4 +110,18 @@ Path::print(void) const
   {
     std::cerr << *it << std::endl;
   }
+}
+
+std::string
+Path::toString(void) const
+{
+  std::ostringstream os;
+  std::streambuf *coutbuf = std::cout.rdbuf();
+  std::cout.rdbuf(os.rdbuf());
+
+  print();
+
+  std::cout.rdbuf(coutbuf);
+
+  return os.str();
 }

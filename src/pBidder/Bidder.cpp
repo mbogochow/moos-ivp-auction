@@ -108,7 +108,19 @@ Bidder::Iterate(void)
   }
   else
   {
-    // TODO Write waypoints from path for agent to follow then exit process
+    Graph *sub = g->getSubgraph(allocated);
+    SpanningTree *tree = SpanningTree::fromGraph(sub->getGraph());
+    Path *path = Path::fromTree(tree);
+    Loc *locs = new Loc[path->getLength()];
+
+    path->getLocations(__locations, locs);
+
+    doNotify(getPathVar(id), pathToString(locs, path->getLength()));
+
+    delete sub;
+    delete tree;
+    delete path;
+    delete locs;
   }
 
   return ret;
@@ -134,7 +146,8 @@ Bidder::performBiddingRound(void)
 
     possibleAllocation.reserve(allocated.size() + 1);
     possibleAllocation = allocated;
-//std::cerr << "Adding " << *t << " for possible allocation" << std::endl;
+    dp.dprintf(LVL_BID, "Adding %s for possible allocation\n",
+        boost::lexical_cast<std::string>(*t).c_str());
     possibleAllocation.push_back(*t);
 
     // Catch simple cases for efficiency
@@ -155,13 +168,13 @@ Bidder::performBiddingRound(void)
     else
     {
       sub = g->getSubgraph(possibleAllocation);
-//sub->print();
+      dp.dprintf(LVL_BID, "Subgraph:\n%s\n", sub->toString().c_str());
 
       tree = SpanningTree::fromGraph(sub->getGraph());
-//std::cout << "Spanning Tree:" << std::endl;
-//tree->print();
+      dp.dprintf(LVL_BID, "Spanning Tree:\n%s\n", tree->toString().c_str());
 
       path = Path::fromTree(tree);
+      dp.dprintf(LVL_BID, "Path:\n%s\n", path->toString().c_str());
 
       cost = path->getTotalCost(g->getGraph());//= get_path_cost(g, path); // TODO
       bid = cost - rtc;
@@ -171,18 +184,25 @@ Bidder::performBiddingRound(void)
       delete sub;
     }
 
-//std::cerr << "bid[" << i << "_" << *t << "]=" << bid << " (cost-rtc)=(" << cost << "-" << rtc << ")" << std::endl;
+    dp.dprintf(LVL_BID, "bid[%lu_%s]=%s (cost-rtc)=(%s-%s)\n", roundNumber,
+        boost::lexical_cast<std::string>(*t).c_str(),
+        boost::lexical_cast<std::string>(bid).c_str(),
+        boost::lexical_cast<std::string>(cost).c_str(),
+        boost::lexical_cast<std::string>(rtc).c_str()
+    );
 
     if (currentBid.second > bid && bid >= 0)
       currentBid = std::make_pair(*t, bid);
 
-//std::cerr << "cur_bid=" << currentBid.first << ":" << currentBid.second << std::endl;
+    dp.dprintf(LVL_BID, "cur_bid=%s:%s\n",
+        boost::lexical_cast<std::string>(currentBid.first).c_str(),
+        boost::lexical_cast<std::string>(currentBid.second).c_str());
   }
 
   assert(currentBid.first  != MAX_VERTEX
       && currentBid.second != MAX_WEIGHT);
 
-  // Send bid
+  // Send bid to MOOSDB
   doNotify(getBidVar(id), bidToString(currentBid));
 }
 

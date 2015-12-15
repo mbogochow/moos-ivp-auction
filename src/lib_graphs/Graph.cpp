@@ -114,3 +114,18 @@ Graph::getSubgraph(std::vector<Vertex> includedVertices)
 
   return subgraph;
 }
+
+// TODO move functionality to a util function with lambda
+std::string
+Graph::toString(void) const
+{
+  std::ostringstream os;
+  std::streambuf *coutbuf = std::cout.rdbuf();
+  std::cout.rdbuf(os.rdbuf());
+
+  print();
+
+  std::cout.rdbuf(coutbuf);
+
+  return os.str();
+}

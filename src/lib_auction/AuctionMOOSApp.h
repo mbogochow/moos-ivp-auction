@@ -39,7 +39,7 @@ protected:
   {
     bool ret;
     std::string sval = boost::lexical_cast<std::string>(val);
-    dp.dprintf(LVL_MID_VERB, "Writing %s=%s\n to MOOSDB\n", key.c_str(),
+    dp.dprintf(LVL_MID_VERB, "Writing %s=%s to MOOSDB\n", key.c_str(),
         sval.c_str());
     if (!(ret = Notify(key, sval)))
     {
