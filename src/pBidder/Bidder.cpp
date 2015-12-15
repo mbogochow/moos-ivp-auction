@@ -94,11 +94,11 @@ Bidder::Iterate(void)
       if (winningBid.winner == id)
       {
         allocated.push_back(winningBid.target);
-        unallocated.erase(
-            std::remove(unallocated.begin(), unallocated.end(),
-                winningBid.target), unallocated.end());
         rtc += winningBid.bid;
       }
+      unallocated.erase(
+          std::remove(unallocated.begin(), unallocated.end(),
+              winningBid.target), unallocated.end());
       winnerUpdated = false;
     }
 
