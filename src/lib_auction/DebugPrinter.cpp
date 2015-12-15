@@ -24,8 +24,8 @@ DebugPrinter::~DebugPrinter(void)
 void
 DebugPrinter::dprintf(const DebugLevel level, const char *format, ...)
 {
-  if (level <= this->level && level != LVL_OFF)
-  {
+//  if (level <= this->level && level != LVL_OFF)
+//  {
     const unsigned int MAX_TRACE_STR = 2048;
     char buf[MAX_TRACE_STR * 2];
 
@@ -37,7 +37,7 @@ DebugPrinter::dprintf(const DebugLevel level, const char *format, ...)
     va_end(args);
 
     MOOSTrace(buf);
-  }
+//  }
 }
 
 void
