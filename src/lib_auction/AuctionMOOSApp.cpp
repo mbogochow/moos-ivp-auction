@@ -31,7 +31,7 @@ AuctionMOOSApp::Iterate(void)
 bool
 AuctionMOOSApp::OnNewMail(MOOSMSG_LIST &NewMail)
 {
-  dp.dprintf(LVL_MAX_VERB, "OnNewMail()\n");
+  dp.dprintf(LVL_MID_VERB, "OnNewMail()\n");
   return true;
 }
 
@@ -39,13 +39,13 @@ AuctionMOOSApp::OnNewMail(MOOSMSG_LIST &NewMail)
 bool
 AuctionMOOSApp::OnConnectToServer(void)
 {
-  dp.dprintf(LVL_MAX_VERB, "OnConnectToServer()\n");
+  dp.dprintf(LVL_MID_VERB, "OnConnectToServer()\n");
   return true;
 }
 
 bool
 AuctionMOOSApp::OnStartUp(void)
 {
-  dp.dprintf(LVL_MAX_VERB, "OnStartup()\n");
+  dp.dprintf(LVL_MID_VERB, "OnStartup()\n");
   return true;
 }
