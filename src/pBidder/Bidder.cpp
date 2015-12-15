@@ -99,14 +99,13 @@ Bidder::Iterate(void)
     winnerUpdated = false;
   }
 
-  if (roundUpdated)
+  dp.dprintf(LVL_MID_VERB, "roundNum < numNodes (%lu < %lu)?\n", roundNumber, g->getNumVertices());
+  if (roundUpdated && roundNumber <= g->getNumVertices())
   {
     performBiddingRound();
     roundUpdated = false;
   }
-
-  dp.dprintf(LVL_MID_VERB, "roundNum < numNodes (%lu < %lu)?\n", roundNumber, g->getNumVertices());
-  if (roundNumber > g->getNumVertices()) //TODO come up with better solution of stopping auctioneer
+  else //TODO come up with better solution of stopping auctioneer
   {
     assert(unallocated.size() == 0);
 
