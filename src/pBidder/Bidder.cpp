@@ -123,7 +123,7 @@ for (std::vector<Vertex>::iterator it = allocated.begin(); it != allocated.end()
   dp.dprintf(LVL_MIN_VERB, "\tallocated[%i]:%s\n", count++,
       boost::lexical_cast<std::string>(*it).c_str());
 }
-dp.dprintf(LVL_MIN_VERB, "Final path:\n%s\n", path->toString());
+dp.dprintf(LVL_MIN_VERB, "Final path:\n%s\n", path->toString().c_str());
 
     path->getLocations(__locations, locs);
 
