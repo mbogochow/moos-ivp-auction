@@ -26,8 +26,6 @@ typedef std::pair<Vertex, mbogo_weight_t> Bid;
 
 template<typename U, typename V>
 std::string pairToString(std::pair<U,V> pair);
-template<typename U, typename V>
-std::pair<U, V> pairFromString(std::string str);
 
 std::string bidToString(Bid bid);
 Bid bidFromString(std::string str);

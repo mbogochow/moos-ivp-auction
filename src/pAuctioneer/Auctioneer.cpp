@@ -15,7 +15,6 @@
 #include "MBUtils.h"
 
 #include <boost/algorithm/string/predicate.hpp> // starts_with
-#include <boost/lexical_cast.hpp>
 
 Auctioneer::Auctioneer(void)
 {

@@ -58,18 +58,6 @@ std::string pairToString(std::pair<U,V> pair)
   return ss.str();
 }
 
-template<typename U, typename V>
-std::pair<U, V> pairFromString(std::string str)
-{
-  std::pair<U,V> pair;
-  std::vector<std::string> strs;
-  boost::split(strs, str, boost::is_any_of(","));
-  pair = std::make_pair(
-      boost::lexical_cast<U>(strs[0]),
-      boost::lexical_cast<V>(strs[1]));
-  return pair;
-}
-
 std::string bidToString(Bid bid)
 {
   return pairToString(bid);
@@ -77,7 +65,13 @@ std::string bidToString(Bid bid)
 
 Bid bidFromString(std::string str)
 {
-  return (Bid)pairFromString<Vertex,mbogo_weight_t>(str);
+  Bid bid;
+  std::vector<std::string> strs;
+  boost::split(strs, str, boost::is_any_of(","));
+  bid = std::make_pair(
+      boost::lexical_cast<Vertex>(strs[0]),
+      boost::lexical_cast<mbogo_weight_t>(strs[1]));
+  return bid;
 }
 
 std::string winningBidToString(WinningBid bid)
