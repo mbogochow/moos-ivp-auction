@@ -124,15 +124,14 @@ Auctioneer::OnStartUp(void)
   dp.setLevel((DebugLevel)debugLevel);
   dp.dprintf(LVL_MAX_VERB, "OnStartup()\n");
 
-  std::string numBidders;
-  if (!m_MissionReader.GetConfigurationParam("NumBidders", numBidders))
+  if (!m_MissionReader.GetConfigurationParam("NumBidders", numberOfBidders))
   {
     MOOSTrace("Warning: parameter 'NumBidders' not specified.\n");
     MOOSTrace("Terminating\n");
     exit(-1);
   }
   else
-    this->bids = new Bid[this->numberOfBidders];
+    this->bids = new Bid[numberOfBidders];
 
   return ret;
 }
