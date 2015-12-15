@@ -13,6 +13,7 @@
 #include "../lib_graphs/Path.h"
 #include "../lib_graphs/defs.h"
 #include "../lib_auction/AuctionDefs.h"
+#include "../lib_auction/DebugPrinter.h"
 
 #include "MBUtils.h"
 
@@ -21,11 +22,11 @@
 
 Bidder::Bidder(void)
 {
-  m_tally_recd = 0;
-  m_tally_sent = 0;
   m_iterations = 0;
 
   g = new Graph(__edges, __num_edges, __weights, __num_nodes);
+
+  // TODO add me to the graph
 
   allocated.reserve(__num_nodes);
   unallocated.reserve(__num_nodes);
@@ -52,6 +53,8 @@ Bidder::OnNewMail(MOOSMSG_LIST &NewMail)
 {
   bool ret = true;
 
+  dp.dprintf(LVL_MAX_VERB, "OnNewMail()\n");
+
   if (roundNumber < g->getNumVertices()) //TODO come up with better solution of stopping auctioneer
   {
     MOOSMSG_LIST::reverse_iterator p;
@@ -63,11 +66,15 @@ Bidder::OnNewMail(MOOSMSG_LIST &NewMail)
       {
         roundUpdated = true;
         roundNumber += 1;
+        dp.dprintf(LVL_MIN_VERB, "Got %s mail: %s\n", MVAR_BID_START.c_str(),
+            msg.GetString().c_str());
       }
       else if (key == MVAR_BID_WINNER)
       {
         winnerUpdated = true;
         winningBid = winningBidFromString(msg.GetString());
+        dp.dprintf(LVL_MIN_VERB, "Got %s mail: %s\n", MVAR_BID_WINNER.c_str(),
+            winningBid);
       }
     }
   }
@@ -79,6 +86,9 @@ bool
 Bidder::Iterate(void)
 {
   bool ret = true;
+
+  m_iterations += 1;
+  dp.dprintf(LVL_MID_VERB, "Iterate() #%u\n", m_iterations);
 
   if (roundNumber < g->getNumVertices()) //TODO come up with better solution of stopping auctioneer
   {
@@ -176,7 +186,12 @@ Bidder::performBiddingRound(void)
       && currentBid.second != MAX_WEIGHT);
 
   // Send bid
-  m_Comms.Notify(MVAR_BID_HEADER + intToString(id), bidToString(currentBid));
+//  f_Comms->writeMsg(MVAR_BID_HEADER + intToString(id), bidToString(currentBid));
+  if (!Notify(getBidVar(id), bidToString(currentBid)))
+  {
+    MOOSTrace("ERROR: Failed to write %s=%s to MOOSDB\n", getBidVar(id).c_str(),
+        bidToString(currentBid).c_str());
+  }
 }
 
 bool
@@ -184,6 +199,14 @@ Bidder::OnStartUp(void)
 {
   bool ret = true;
 
+  // Read the DebugOutput configuration field
+  int debugLevel;
+  if (!m_MissionReader.GetConfigurationParam("DebugOutput", debugLevel))
+    debugLevel = LVL_OFF;
+  dp.setLevel((DebugLevel)debugLevel);
+  dp.dprintf(LVL_MAX_VERB, "OnStartup()\n");
+
+  // Read the AgentID configuration field
   std::string id;
   if (!m_MissionReader.GetConfigurationParam("AgentID", id))
   {
@@ -191,8 +214,8 @@ Bidder::OnStartUp(void)
     MOOSTrace("Terminating\n");
     exit(-1);
   }
-  else
-    this->id = boost::lexical_cast<int>(id);
+
+  RegisterVariables();
 
   return ret;
 }
@@ -200,6 +223,7 @@ Bidder::OnStartUp(void)
 bool
 Bidder::OnConnectToServer(void)
 {
+  dp.dprintf(LVL_MAX_VERB, "OnConnectToServer()\n");
   RegisterVariables();
   return true;
 }

@@ -13,6 +13,7 @@
 #include "MOOS/libMOOS/App/MOOSApp.h"
 
 #include "../lib_auction/AuctionDefs.h"
+#include "../lib_auction/DebugPrinter.h"
 
 #include <string>
 
@@ -29,8 +30,6 @@ public:
   bool OnConnectToServer(void);
 
 protected:
-  unsigned long int m_tally_recd;
-  unsigned long int m_tally_sent;
   unsigned long int m_iterations;
 
 private:
@@ -38,6 +37,8 @@ private:
   int numberOfBidders;
   Bid *bids;
   int numReceivedBids;
+
+  DebugPrinter dp;
 };
 
 #endif /* MBOGO_AUCTIONEER_H_ */

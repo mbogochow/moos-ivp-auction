@@ -10,6 +10,7 @@
 #include "Auctioneer.h"
 #include "../lib_graphs/defs.h"
 #include "../lib_auction/AuctionDefs.h"
+#include "../lib_auction/DebugPrinter.h"
 
 #include "MBUtils.h"
 
@@ -18,8 +19,6 @@
 
 Auctioneer::Auctioneer(void)
 {
-  m_tally_recd = 0;
-  m_tally_sent = 0;
   m_iterations = 0;
 
   roundNumber = 0;
@@ -38,6 +37,8 @@ bool
 Auctioneer::OnNewMail(MOOSMSG_LIST &NewMail)
 {
   bool ret = true;
+
+  dp.dprintf(LVL_MAX_VERB, "OnNewMail()\n");
 
   if (roundNumber < __num_nodes) //TODO come up with better solution of stopping auctioneer
   {
@@ -64,12 +65,21 @@ Auctioneer::Iterate(void)
 {
   bool ret = true;
 
+  m_iterations += 1;
+  dp.dprintf(LVL_MID_VERB, "Iterate() #%u\n", m_iterations);
+
   if (roundNumber < __num_nodes) //TODO come up with better solution of stopping auctioneer
   {
     if (roundNumber == 0)
-      m_Comms.Notify(MVAR_BID_START, ++roundNumber);
-    else if (numReceivedBids == numberOfBidders)
     {
+      if (!Notify(MVAR_BID_START, ++roundNumber))
+      {
+        MOOSTrace("ERROR: Failed to write %s=%s to MOOSDB\n",
+            MVAR_BID_START.c_str(), roundNumber);
+      }
+    }
+    else if (numReceivedBids == numberOfBidders)
+    { // All bids received for round
       WinningBid winner = { 0, MAX_VERTEX, MAX_WEIGHT };
       // Calculate winner
       for (int i = 0; i < numberOfBidders; i++)
@@ -83,9 +93,17 @@ Auctioneer::Iterate(void)
       }
 
       // Send winner
-      m_Comms.Notify(MVAR_BID_WINNER, winningBidToString(winner));
+      if (!Notify(MVAR_BID_WINNER, winningBidToString(winner)))
+      {
+        MOOSTrace("ERROR: Failed to write %s=%s to MOOSDB\n",
+            MVAR_BID_WINNER.c_str(), winningBidToString(winner).c_str());
+      }
 
-      m_Comms.Notify(MVAR_BID_START, ++roundNumber);
+      if (!Notify(MVAR_BID_START, ++roundNumber))
+      {
+        MOOSTrace("ERROR: Failed to write %s=%s to MOOSDB\n",
+            MVAR_BID_START.c_str(), roundNumber);
+      }
 
       numReceivedBids = 0;
     }
@@ -99,6 +117,13 @@ Auctioneer::OnStartUp(void)
 {
   bool ret = true;
 
+  // Read the DebugOutput configuration field
+  int debugLevel;
+  if (!m_MissionReader.GetConfigurationParam("DebugOutput", debugLevel))
+    debugLevel = LVL_OFF;
+  dp.setLevel((DebugLevel)debugLevel);
+  dp.dprintf(LVL_MAX_VERB, "OnStartup()\n");
+
   std::string numBidders;
   if (!m_MissionReader.GetConfigurationParam("NumBidders", numBidders))
   {
@@ -107,10 +132,7 @@ Auctioneer::OnStartUp(void)
     exit(-1);
   }
   else
-  {
-    this->numberOfBidders = boost::lexical_cast<int>(numBidders);
     this->bids = new Bid[this->numberOfBidders];
-  }
 
   return ret;
 }
@@ -118,6 +140,7 @@ Auctioneer::OnStartUp(void)
 bool
 Auctioneer::OnConnectToServer(void)
 {
+  dp.dprintf(LVL_MAX_VERB, "OnConnectToServer()\n");
   RegisterVariables();
   return true;
 }

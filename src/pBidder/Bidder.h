@@ -16,6 +16,7 @@
 #include "../lib_graphs/defs.h"
 
 #include "../lib_auction/AuctionDefs.h"
+#include "../lib_auction/DebugPrinter.h"
 
 #include <string>
 
@@ -32,9 +33,7 @@ public:
   bool OnConnectToServer(void);
 
 protected:
-  unsigned long int m_tally_recd;
-  unsigned long int m_tally_sent;
-  unsigned long int m_iterations;
+  unsigned int m_iterations;
 
 private:
   Graph *g;
@@ -49,6 +48,8 @@ private:
   struct WinningBid winningBid;
 
   void performBiddingRound(void);
+
+  DebugPrinter dp;
 };
 
 #endif /* MBOGO_BIDDER_H_ */

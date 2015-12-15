@@ -81,3 +81,12 @@ int getBidder(std::string bidHeader)
 
   return bidder;
 }
+
+std::string getBidVar(const int id)
+{
+  std::stringstream ss;
+
+  ss << MVAR_BID_HEADER << id;
+
+  return ss.str();
+}

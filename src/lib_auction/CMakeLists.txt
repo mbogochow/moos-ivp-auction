@@ -19,7 +19,8 @@ endif (${WIN32})
 #                                                 Auction
 #--------------------------------------------------------
 ADD_LIBRARY(Auction SHARED 
-   AuctionDefs.cpp)
+   AuctionDefs.cpp
+   DebugPrinter.cpp)
 TARGET_LINK_LIBRARIES(Auction
 #   helmivp
 #   behaviors 

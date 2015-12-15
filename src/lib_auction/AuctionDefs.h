@@ -8,7 +8,7 @@
 #include "../lib_graphs/defs.h"
 
 const std::string MVAR_BID_WINNER = "BID_WINNER";
-const std::string MVAR_BID_START = "BID_START";
+const std::string MVAR_BID_START  = "BID_START";
 const std::string MVAR_BID_HEADER = "BID_";
 
 typedef struct WinningBid
@@ -25,5 +25,6 @@ Bid bidFromString(std::string str);
 std::string winningBidToString(WinningBid bid);
 WinningBid winningBidFromString(std::string str);
 int getBidder(std::string bidHeader);
+std::string getBidVar(int id);
 
 #endif /*AUCTION_DEFS_H_*/
