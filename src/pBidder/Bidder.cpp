@@ -217,6 +217,8 @@ Bidder::OnStartUp(void)
     debugLevel = LVL_OFF;
   dp.setLevel((DebugLevel)debugLevel);
 
+  MOOSTrace("dbgLvl: %i\n", debugLevel);
+
   ret = AuctionMOOSApp::OnStartUp();
 
   // Read the AgentID configuration field
