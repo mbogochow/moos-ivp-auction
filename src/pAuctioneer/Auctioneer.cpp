@@ -131,5 +131,5 @@ void
 Auctioneer::RegisterVariables(void)
 {
   for (int i = 0; i < numberOfBidders; i++)
-    m_Comms.Register(MVAR_BID_HEADER + intToString(i + 1), 0);
+    m_Comms.Register(getBidVar(i), 0);
 }
