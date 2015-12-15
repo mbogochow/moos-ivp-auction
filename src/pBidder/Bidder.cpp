@@ -222,7 +222,6 @@ Bidder::OnStartUp(void)
   ret = AuctionMOOSApp::OnStartUp();
 
   // Read the AgentID configuration field
-  std::string id;
   if (!m_MissionReader.GetConfigurationParam("AgentID", id))
   {
     MOOSTrace("Warning: parameter 'AgentID' not specified.\n");
