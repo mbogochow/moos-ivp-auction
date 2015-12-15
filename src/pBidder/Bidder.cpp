@@ -110,10 +110,20 @@ Bidder::Iterate(void)
   }
   else
   {
+    // Do final cost calculation and submit path
     Graph *sub = g->getSubgraph(allocated);
     SpanningTree *tree = SpanningTree::fromGraph(sub->getGraph());
     Path *path = Path::fromTree(tree);
     Loc *locs = new Loc[path->getLength()];
+
+dp.dprintf(LVL_MIN_VERB, "Final allocated:\n");
+int count = 0;
+for (std::vector<Vertex>::iterator it = allocated.begin(); it != allocated.end(); it++)
+{
+  dp.dprintf(LVL_MIN_VERB, "\tallocated[%i]:%s\n", count++,
+      boost::lexical_cast<std::string>(*it).c_str());
+}
+dp.dprintf(LVL_MIN_VERB, "Final path:\n%s\n", path->toString());
 
     path->getLocations(__locations, locs);
 
