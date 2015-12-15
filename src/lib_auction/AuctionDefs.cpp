@@ -98,6 +98,14 @@ int getBidder(std::string bidHeader)
 
   std::vector<std::string> strs;
   boost::split(strs, bidHeader, boost::is_any_of("_"));
+
+  int count = 0;
+  for (std::vector<std::string>::iterator it = strs.begin(); it != strs.end(); it++)
+  {
+    std::cerr << "split[" << count++ << "]=" << *it << std::endl;
+  }
+  std::cerr << "split.back()=" << strs.back() << std::endl;
+
   bidder = boost::lexical_cast<int>(strs.back());
 
   return bidder;
