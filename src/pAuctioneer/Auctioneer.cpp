@@ -144,7 +144,7 @@ Auctioneer::RegisterVariables(void)
   for (int i = 0; i < numberOfBidders; i++)
   {
     std::string key = getBidVar(i);
-    dp.dprintf(LVL_MIN_VERB, "Registering %s\n", key);
+    dp.dprintf(LVL_MIN_VERB, "Registering %s\n", key.c_str());
     m_Comms.Register(key, 0);
   }
 }
