@@ -93,6 +93,8 @@ Auctioneer::Iterate(void)
       numReceivedBids = 0;
     }
   }
+  else
+    doNotify(MVAR_BID_START, roundNumber);
 
   return ret;
 }
