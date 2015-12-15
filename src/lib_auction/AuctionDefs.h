@@ -11,8 +11,8 @@
 
 const std::string MVAR_BID_WINNER  = "BID_WINNER";
 const std::string MVAR_BID_START   = "BID_START";
-const std::string MVAR_BID_HEADER  = "BID_";
-const std::string MVAR_PATH_HEADER = "PATH_UPDATE_";
+const std::string MVAR_BID_HEADER  = "BID_V";
+const std::string MVAR_PATH_HEADER = "PATH_UPDATE_V";
 const std::string MVAR_PATH        = "polygon";
 
 typedef struct WinningBid
