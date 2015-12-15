@@ -86,30 +86,30 @@ Bidder::Iterate(void)
 {
   bool ret = AuctionMOOSApp::Iterate();
 
-  dp.dprintf(LVL_MID_VERB, "roundNum < numNodes (%lu < %lu)?\n", roundNumber, g->getNumVertices());
-  if (roundNumber <= g->getNumVertices()) //TODO come up with better solution of stopping auctioneer
+  if (winnerUpdated)
   {
-    if (winnerUpdated)
+    if (winningBid.winner == id)
     {
-      if (winningBid.winner == id)
-      {
-        allocated.push_back(winningBid.target);
-        rtc += winningBid.bid;
-      }
-      unallocated.erase(
-          std::remove(unallocated.begin(), unallocated.end(),
-              winningBid.target), unallocated.end());
-      winnerUpdated = false;
+      allocated.push_back(winningBid.target);
+      rtc += winningBid.bid;
     }
-
-    if (roundUpdated)
-    {
-      performBiddingRound();
-      roundUpdated = false;
-    }
+    unallocated.erase(
+        std::remove(unallocated.begin(), unallocated.end(),
+            winningBid.target), unallocated.end());
+    winnerUpdated = false;
   }
-  else
+
+  if (roundUpdated)
   {
+    performBiddingRound();
+    roundUpdated = false;
+  }
+
+  dp.dprintf(LVL_MID_VERB, "roundNum < numNodes (%lu < %lu)?\n", roundNumber, g->getNumVertices());
+  if (roundNumber > g->getNumVertices()) //TODO come up with better solution of stopping auctioneer
+  {
+    assert(unallocated.size() == 0);
+
     // Do final cost calculation and submit path
     Graph *sub = g->getSubgraph(allocated);
     SpanningTree *tree = SpanningTree::fromGraph(sub->getGraph());
@@ -133,6 +133,10 @@ dp.dprintf(LVL_MIN_VERB, "Final path:\n%s\n", path->toString().c_str());
     delete tree;
     delete path;
     delete locs;
+
+    // Exit pBidder
+    // doNotify("EXITED_NORMALLY", "pBidder");
+    // exit(0);
   }
 
   return ret;
