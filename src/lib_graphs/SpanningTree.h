@@ -16,14 +16,8 @@ public:
   /** Get the size of the tree (the number of vertices) */
   size_t size(void);
 
-  /** Get the vertex at the given index in the tree. */
+  /** Get the parent of the vertex at the given index in the tree. */
   Vertex get(size_t index);
-
-  /**
-   * Get the weight of traveling to the node at the given index from the
-   * node's parent according to the original graph.
-   */
-  mbogo_weight_t getWeight(size_t index);
 
   /** Prints the tree to std::cout */
   void print(void) const;
@@ -36,7 +30,6 @@ public:
 
 private:
   std::vector<Vertex> tree;
-  std::vector<mbogo_weight_t> weights;
 
   SpanningTree(size_t size);
 };

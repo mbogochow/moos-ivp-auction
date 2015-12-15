@@ -10,7 +10,6 @@
 SpanningTree::SpanningTree(const size_t size)
 {
   tree.resize(size); // must be resize not reserve for prim's alg.
-  weights.reserve(size);
 }
 
 SpanningTree::~SpanningTree(void)
@@ -28,12 +27,6 @@ Vertex
 SpanningTree::get(const size_t index)
 {
   return tree.data()[index];
-}
-
-mbogo_weight_t
-SpanningTree::getWeight(const size_t index)
-{
-  return weights.data()[index];
 }
 
 SpanningTree *

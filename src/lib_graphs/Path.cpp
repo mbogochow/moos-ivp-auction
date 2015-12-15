@@ -26,6 +26,7 @@ static void fromTreeHelper(SpanningTree * const tree,
   {
     // Skip over any nodes that don't have current node as parent.
     // Therefore also skips previously visited nodes.
+    // Note: tree.get gives the parent of node
     if (i != curr && tree->get(i) == curr)
     {
       path->push_back(i);

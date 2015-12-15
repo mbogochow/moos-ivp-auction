@@ -108,7 +108,7 @@ Bidder::Iterate(void)
       roundUpdated = false;
     }
   }
-  else //TODO come up with better solution of stopping auctioneer
+  else //TODO come up with better solution of stopping bidder
   {
     assert(unallocated.size() == 0);
 
