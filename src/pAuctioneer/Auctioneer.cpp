@@ -67,6 +67,8 @@ Auctioneer::Iterate(void)
   dp.dprintf(LVL_MID_VERB, "roundNum < numNodes (%lu < %lu)?\n", roundNumber, __num_nodes);
   if (roundNumber < __num_nodes) //TODO come up with better solution of stopping auctioneer
   {
+    dp.dprintf(LVL_MIN_VERB, "numReceivedBids=%i\n", numReceivedBids);
+
     if (roundNumber == 0)
       doNotify(MVAR_BID_START, ++roundNumber);
     else if (numReceivedBids == numberOfBidders)
