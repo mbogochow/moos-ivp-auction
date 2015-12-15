@@ -46,6 +46,7 @@ Auctioneer::OnNewMail(MOOSMSG_LIST &NewMail)
     {
       CMOOSMsg &msg = *p;
       std::string key   = msg.GetKey();
+      MOOSTrace("key=%s\n", key.c_str());
 
       if (boost::starts_with(key, MVAR_BID_HEADER))
       {
@@ -135,5 +136,9 @@ void
 Auctioneer::RegisterVariables(void)
 {
   for (int i = 0; i < numberOfBidders; i++)
-    m_Comms.Register(getBidVar(i), 0);
+  {
+    std::string key = getBidVar(i);
+    dp.dprintf(LVL_MIN_VERB, "Registering %s\n", key);
+    m_Comms.Register(key, 0);
+  }
 }
