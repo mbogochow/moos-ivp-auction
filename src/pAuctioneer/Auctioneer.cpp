@@ -45,7 +45,6 @@ Auctioneer::OnNewMail(MOOSMSG_LIST &NewMail)
     {
       CMOOSMsg &msg = *p;
       std::string key   = msg.GetKey();
-      MOOSTrace("key=%s\n", key.c_str());
 
       if (boost::starts_with(key, MVAR_BID_HEADER))
       {
@@ -109,8 +108,6 @@ Auctioneer::OnStartUp(void)
     debugLevel = LVL_OFF;
   dp.setLevel((DebugLevel)debugLevel);
 
-  MOOSTrace("dbgLvl: %i\n", debugLevel);
-
   ret = AuctionMOOSApp::OnStartUp();
 
   if (!m_MissionReader.GetConfigurationParam("NumBidders", numberOfBidders))
@@ -121,8 +118,6 @@ Auctioneer::OnStartUp(void)
   }
   else
     this->bids = new Bid[numberOfBidders];
-
-  MOOSTrace("NumBidders: %i\n", numberOfBidders);
 
   RegisterVariables();
 

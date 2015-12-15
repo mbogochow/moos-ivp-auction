@@ -99,11 +99,13 @@ Bidder::Iterate(void)
                 winningBid.target), unallocated.end());
         rtc += winningBid.bid;
       }
+      winnerUpdated = false;
     }
 
     if (roundUpdated)
     {
       performBiddingRound();
+      roundUpdated = false;
     }
   }
   else
@@ -216,8 +218,6 @@ Bidder::OnStartUp(void)
   if (!m_MissionReader.GetConfigurationParam("DebugOutput", debugLevel))
     debugLevel = LVL_OFF;
   dp.setLevel((DebugLevel)debugLevel);
-
-  MOOSTrace("dbgLvl: %i\n", debugLevel);
 
   ret = AuctionMOOSApp::OnStartUp();
 
