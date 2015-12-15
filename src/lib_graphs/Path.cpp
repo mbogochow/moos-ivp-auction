@@ -108,7 +108,7 @@ Path::print(void) const
   for (std::vector<Vertex>::const_iterator it = path.begin(); it != path.end();
       it++)
   {
-    std::cerr << *it << std::endl;
+    std::cout << *it << std::endl;
   }
 }
 
