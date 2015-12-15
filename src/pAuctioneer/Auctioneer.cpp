@@ -52,7 +52,7 @@ Auctioneer::OnNewMail(MOOSMSG_LIST &NewMail)
         int bidder = getBidder(key);
         bids[bidder] = bidFromString(msg.GetString());
         numReceivedBids += 1;
-        dp.dprintf(LVL_MIN_VERB, "Got %s mail: %s\n", key,
+        dp.dprintf(LVL_MIN_VERB, "Got %s mail: %s\n", key.c_str(),
             msg.GetString().c_str());
       }
     }
