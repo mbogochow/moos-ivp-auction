@@ -54,7 +54,7 @@ Bidder::OnNewMail(MOOSMSG_LIST &NewMail)
   bool ret = AuctionMOOSApp::OnNewMail(NewMail);
 
   dp.dprintf(LVL_MID_VERB, "roundNum < numNodes (%lu < %lu)?\n", roundNumber, g->getNumVertices());
-  if (roundNumber < g->getNumVertices()) //TODO come up with better solution of stopping auctioneer
+  if (roundNumber <= g->getNumVertices()) //TODO come up with better solution of stopping auctioneer
   {
     MOOSMSG_LIST::reverse_iterator p;
     for(p = NewMail.rbegin(); p!=NewMail.rend(); p++) {
@@ -87,7 +87,7 @@ Bidder::Iterate(void)
   bool ret = AuctionMOOSApp::Iterate();
 
   dp.dprintf(LVL_MID_VERB, "roundNum < numNodes (%lu < %lu)?\n", roundNumber, g->getNumVertices());
-  if (roundNumber < g->getNumVertices()) //TODO come up with better solution of stopping auctioneer
+  if (roundNumber <= g->getNumVertices()) //TODO come up with better solution of stopping auctioneer
   {
     if (winnerUpdated)
     {
