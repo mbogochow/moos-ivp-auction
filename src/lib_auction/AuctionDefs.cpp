@@ -97,7 +97,7 @@ int getBidder(std::string bidHeader)
   int bidder;
 
   std::vector<std::string> strs;
-  boost::split(strs, bidHeader, boost::is_any_of("_"));
+  boost::split(strs, bidHeader, boost::is_any_of("_V"));
 
   int count = 0;
   for (std::vector<std::string>::iterator it = strs.begin(); it != strs.end(); it++)
