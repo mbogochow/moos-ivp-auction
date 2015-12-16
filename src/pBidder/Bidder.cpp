@@ -67,8 +67,8 @@ Bidder::OnNewMail(MOOSMSG_LIST &NewMail)
 
       if (key == MVAR_BID_START)
       {
-        int num = boost::lexical_cast<int>(msg.GetString());
-        if (num > roundNumber)
+        size_t num = boost::lexical_cast<size_t>(msg.GetString());
+        if (num > roundNumber) // ignore duplicate messages
         {
           if (num != roundNumber + 1)
           {
