@@ -303,13 +303,17 @@ Bidder::OnStartUp(void)
   if (ret && !m_MissionReader.GetConfigurationParam("AgentID", id))
     ret = MissingRequiredParam("AgentID");
 
-  std::string tmp;
-  if (ret && !m_MissionReader.GetConfigurationParam("START_POS", tmp))
-    ret = MissingRequiredParam("START_POS");
-  else
-    startPos = pointFromString(tmp);
+  if (ret)
+  {
+    std::string tmp;
+    if (!m_MissionReader.GetConfigurationParam("START_POS", tmp))
+      ret = MissingRequiredParam("START_POS");
+    else
+      startPos = pointFromString(tmp);
 
-  RegisterVariables();
+    if (ret)
+      RegisterVariables();
+  }
 
   return ret;
 }

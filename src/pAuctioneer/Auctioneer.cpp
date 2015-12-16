@@ -119,35 +119,34 @@ Auctioneer::OnStartUp(void)
 
   ret = AuctionMOOSApp::OnStartUp();
 
-  // NumBidders config
-  std::string tmp;
-  if (!m_MissionReader.GetConfigurationParam("NumBidders", tmp))
+  if (ret)
   {
-    MOOSTrace("Warning: parameter 'NumBidders' not specified.\n");
-    MOOSTrace("Terminating\n");
-    exit(-1);
-  }
-  else
-  {
-    numBidders = boost::lexical_cast<size_t>(tmp);
-    this->bids = new Bid[numBidders];
-  }
+    // NumBidders config
+    std::string tmp;
+    if (!m_MissionReader.GetConfigurationParam("NumBidders", tmp))
+      ret = MissingRequiredParam("NumBidders");
+    else
+    {
+      numBidders = boost::lexical_cast<size_t>(tmp);
+      this->bids = new Bid[numBidders];
+    }
 
-  // Targets config
-  std::string targets;
-  if (!m_MissionReader.GetConfigurationParam("Targets", targets))
-  {
-    MOOSTrace("Warning: parameter 'Targets' not specified.\n");
-    MOOSTrace("Terminating\n");
-    exit(-1);
-  }
-  else
-  {
-    numTargets = getStringPathSize(targets);
-    doNotify(MVAR_BID_TARGETS, targets);
-  }
+    if (ret)
+    {
+      // Targets config
+      std::string targets;
+      if (!m_MissionReader.GetConfigurationParam("Targets", targets))
+        ret = MissingRequiredParam("Targets");
+      else
+      {
+        numTargets = getStringPathSize(targets);
+        doNotify(MVAR_BID_TARGETS, targets);
+      }
 
-  RegisterVariables();
+      if (ret)
+        RegisterVariables();
+    }
+  }
 
   return ret;
 }
