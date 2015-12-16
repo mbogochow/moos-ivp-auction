@@ -92,9 +92,17 @@ Auctioneer::Iterate(void)
 
       numReceivedBids = 0;
     }
+    else
+      doNotify(MVAR_BID_START, roundNumber);
   }
   else
-    doNotify(MVAR_BID_START, roundNumber);
+  {
+    // Exit pAuctioneer
+    doNotify("EXITED_NORMALLY", "pAuctioneer");
+//    // Ensure data is passed to auctioneer
+//    std::this_thread::sleep_for(std::chrono::milliseconds(1000 * 10));
+    exit(0);
+  }
 
   return ret;
 }
