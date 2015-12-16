@@ -117,39 +117,42 @@ Bidder::Iterate(void)
 {
   bool ret = AuctionMOOSApp::Iterate();
 
-  if (winnerUpdated)
+  if (g != nullptr)
   {
-    if (winningBid.winner == id)
+    if (winnerUpdated)
     {
-      allocated.push_back(winningBid.target);
-      rtc += winningBid.bid;
+      if (winningBid.winner == id)
+      {
+        allocated.push_back(winningBid.target);
+        rtc += winningBid.bid;
+      }
+      unallocated.erase(
+          std::remove(unallocated.begin(), unallocated.end(),
+              winningBid.target), unallocated.end());
+      winnerUpdated = false;
     }
-    unallocated.erase(
-        std::remove(unallocated.begin(), unallocated.end(),
-            winningBid.target), unallocated.end());
-    winnerUpdated = false;
-  }
 
-  dp.dprintf(LVL_MAX_VERB, "roundNum <= numNodes (%lu <= %lu)?\n", roundNumber, g->getNumVertices());
-  if (roundNumber <= g->getNumVertices())
-  {
-    if (roundUpdated)
+    dp.dprintf(LVL_MAX_VERB, "roundNum <= numNodes (%lu <= %lu)?\n", roundNumber, g->getNumVertices());
+    if (roundNumber <= g->getNumVertices())
     {
-      performBiddingRound();
-      roundUpdated = false;
+      if (roundUpdated)
+      {
+        performBiddingRound();
+        roundUpdated = false;
+      }
     }
-  }
-  else
-  {
-    assert(unallocated.size() == 0);
+    else
+    {
+      assert(unallocated.size() == 0);
 
-    performFinalCalc();
+      performFinalCalc();
 
-    // Exit pBidder
-    doNotify("EXITED_NORMALLY", "pBidder");
-    // Ensure all data makes it to the MOOSDB
-    std::this_thread::sleep_for(std::chrono::seconds(10));
-    exit(0);
+      // Exit pBidder
+      doNotify("EXITED_NORMALLY", "pBidder");
+      // Ensure all data makes it to the MOOSDB
+      std::this_thread::sleep_for(std::chrono::seconds(10));
+      exit(0);
+    }
   }
 
   return ret;
