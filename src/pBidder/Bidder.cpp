@@ -9,6 +9,7 @@
 
 #include "Bidder.h"
 #include "../lib_graphs/Graph.h"
+#include "../lib_graphs/Subgraph.h"
 #include "../lib_graphs/SpanningTree.h"
 #include "../lib_graphs/Path.h"
 #include "../lib_graphs/defs.h"
@@ -113,7 +114,7 @@ Bidder::Iterate(void)
     assert(unallocated.size() == 0);
 
     // Do final cost calculation and submit path
-    Graph *sub = g->getSubgraph(allocated);
+    Subgraph *sub = Subgraph::fromGraph(g, allocated);
     SpanningTree *tree = SpanningTree::fromGraph(sub->getGraph());
     Path *path = Path::fromTree(tree);
     Loc *locs = new Loc[path->getLength()];
@@ -126,6 +127,9 @@ for (std::vector<Vertex>::iterator it = allocated.begin(); it != allocated.end()
       boost::lexical_cast<std::string>(*it).c_str());
 }
 dp.dprintf(LVL_MIN_VERB, "Final path:\n%s\n", path->toString().c_str());
+
+    path->convertPath(sub->getParentIndices());
+dp.dprintf(LVL_MIN_VERB, "Converted path:\n%s\n", path->toString().c_str());
 
     path->getLocations(__locations, locs);
 

@@ -29,6 +29,10 @@ public:
   std::string toString(void) const;
 
 private:
+  /**
+   * Note: the index of a member of the tree is connected to the contents of
+   * the tree at that index.  i.e. (tree[i],i) is an edge in the tree.
+   */
   std::vector<Vertex> tree;
 
   SpanningTree(size_t size);

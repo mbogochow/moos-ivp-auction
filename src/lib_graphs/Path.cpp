@@ -97,6 +97,16 @@ Path::getLocations(Loc *locations, Loc *locs)
     locs[i] = locations[path.data()[i]];
 }
 
+void
+Path::convertPath(Vertex *path)
+{
+  std::vector<Vertex> tempPath;
+  tempPath.reserve(length);
+  for (size_t i = 0; i < length; i++)
+    tempPath[i] = path[this->path[i]];
+  this->path = tempPath;
+}
+
 std::vector<Vertex> *
 Path::data(void)
 {

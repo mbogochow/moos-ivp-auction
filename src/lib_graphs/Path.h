@@ -23,6 +23,12 @@ public:
   static Path * fromPair(std::pair<Vertex, Vertex> path);
 
   /**
+   * Converts the values along this path to the matching values in the given
+   * path.  i.e. this->path[i] = path[this->path[i]] for all i in this.
+   */
+  void convertPath(Vertex *path);
+
+  /**
    * Get the cost to traverse the path given the weights in the given graph.
    */
   mbogo_weight_t getTotalCost(UndirectedGraph *g);

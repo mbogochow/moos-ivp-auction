@@ -20,6 +20,7 @@ endif (${WIN32})
 #--------------------------------------------------------
 ADD_LIBRARY(Graphs SHARED 
    Graph.cpp
+   Subgraph.cpp
    SpanningTree.cpp
    Path.cpp)
 TARGET_LINK_LIBRARIES(Graphs

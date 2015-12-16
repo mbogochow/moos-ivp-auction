@@ -1,6 +1,7 @@
 
 
 #include "Graph.h"
+#include "Subgraph.h"
 
 #include <assert.h>
 
@@ -67,51 +68,7 @@ Graph::addEdge(Edge edge, mbogo_weight_t weight)
 Graph *
 Graph::getSubgraph(std::vector<Vertex> includedVertices)
 {
-  Graph *subgraph = new Graph(includedVertices.size());
-
-  const Vertex def = MAX_VERTEX; // Default vertex val
-  size_t numEdges = this->edges.size();
-
-  // Add all edges from original graph to subgraph which connect nodes
-  // contained within the subgraph
-  // O(E*V')
-  for (size_t i = 0; i < numEdges; i++)
-  {
-    Vertex first = edges.data()[i].first;
-    Vertex second = edges.data()[i].second;
-    Vertex firstIndex = def;
-    Vertex secondIndex = def;
-    Vertex index = 0;
-
-    for (std::vector<Vertex>::iterator it = includedVertices.begin();
-        it != includedVertices.end(); it++, index++)
-    {
-      if (firstIndex != def && secondIndex != def)
-        break;
-
-      if (first == *it)
-      {
-        firstIndex = index;
-        continue;
-      }
-
-      if (second == *it)
-      {
-        secondIndex = index;
-        continue;
-      }
-    }
-
-    if (firstIndex != def && secondIndex != def)
-    {
-//      std::cerr << "(" << first << "," << second << "), v: " << "(" << firstIndex << "," << secondIndex << ")"/*<< *it */<< std::endl;
-      boost::add_edge(firstIndex, secondIndex, weights.data()[i], *(subgraph->g));
-      subgraph->addEdge(std::make_pair(firstIndex, secondIndex),
-          weights.data()[i]);
-    }
-  }
-
-  return subgraph;
+  return Subgraph::fromGraph(this, includedVertices);
 }
 
 // TODO move functionality to a util function with lambda

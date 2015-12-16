@@ -36,7 +36,7 @@ public:
    */
   std::string toString(void) const;
 
-private:
+protected:
   UndirectedGraph *g;
   size_t numNodes;
   std::vector<Edge> edges;
@@ -49,6 +49,8 @@ private:
    */
   void assignEdgeVals(Edge *edges, mbogo_weight_t *weights);
   void addEdge(Edge edge, mbogo_weight_t weight);
+
+  friend class Subgraph;
 };
 
 #endif /*MBOGO_GRAPH_H_*/
