@@ -63,7 +63,7 @@ Bidder::OnNewMail(MOOSMSG_LIST &NewMail)
   {
     CMOOSMsg &msg = *p;
     std::string key   = msg.GetKey();
-
+MOOSTrace("key=%s, g==nullptr=%s\n", msg.GetString().c_str(), boost::lexical_cast<std::string>(g==nullptr).c_str());
     if (key == MVAR_BID_TARGETS && g == nullptr) // ignore if already have g
     {
       std::string sTargets = msg.GetString();
