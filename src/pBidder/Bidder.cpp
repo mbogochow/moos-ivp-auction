@@ -120,7 +120,9 @@ MOOSTrace("weights.size: %s\n", weights.size());
 //std::this_thread::sleep_for(std::chrono::seconds(4));
 
       g = new Graph(edges.data(), edges.size(), weights.data(), numTargets);
+MOOSTrace("Graph:\n%s\n", g->toString());
 //      g = new Graph(__edges, __num_edges, __weights, __num_nodes);
+std::this_thread::sleep_for(std::chrono::seconds(10));
 
       // TODO add me to the graph
 
