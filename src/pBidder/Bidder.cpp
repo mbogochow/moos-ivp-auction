@@ -53,6 +53,42 @@ Bidder::~Bidder(void)
     delete g;
 }
 
+#define _a 0
+#define _b 1
+#define _c 2
+#define _d 3
+#define _e 4
+#define _f 5
+#define _g 6
+#define _h 7
+#define _i 8
+
+const size_t __num_nodes = 9;
+const size_t __num_edges = 36;
+Edge __edges[__num_edges] = {
+  Edge(_a, _b), Edge(_a, _c), Edge(_a, _d), Edge(_a, _e), Edge(_a, _f), Edge(_a, _g), Edge(_a, _h), Edge(_a, _i),
+  Edge(_b, _c), Edge(_b, _d), Edge(_b, _e), Edge(_b, _f), Edge(_b, _g), Edge(_b, _h), Edge(_b, _i),
+  Edge(_c, _d), Edge(_c, _e), Edge(_c, _f), Edge(_c, _g), Edge(_c, _h), Edge(_c, _i),
+  Edge(_d, _e), Edge(_d, _f), Edge(_d, _g), Edge(_d, _h), Edge(_d, _i),
+  Edge(_e, _f), Edge(_e, _g), Edge(_e, _h), Edge(_e, _i),
+  Edge(_f, _g), Edge(_f, _h), Edge(_f, _i),
+  Edge(_g, _h), Edge(_g, _i),
+  Edge(_h, _i)
+};
+int __weights[__num_edges] = {
+    4,       8,       11,      8,      7,        4,       2,      9,
+    14,      10,      2,       1,      6,        7,       4,
+    8,       11,      8,       7,      4,        2,
+    9,       14,      10,      2,      1,
+    6,       7,       4,       8,
+    11,      8,       7,
+    4,       2,
+    9 };
+Point __Pointations[__num_nodes] = {
+    Point(7, 0), Point(15, 15), Point(30, 15), Point(45, 15),
+    Point(60, 0), Point(45, -15), Point(30, -15), Point(15, -15), Point(22, 0)
+};
+
 bool
 Bidder::OnNewMail(MOOSMSG_LIST &NewMail)
 {
@@ -73,17 +109,18 @@ std::this_thread::sleep_for(std::chrono::seconds(4));
 MOOSTrace("HERE\n");
 std::this_thread::sleep_for(std::chrono::seconds(4));
       size_t numTargets = targets.size();
-MOOSTrace("targets.size: %s\n", targets.size());
+MOOSTrace("targets.size: %s\n", numTargets);
 std::this_thread::sleep_for(std::chrono::seconds(4));
-      std::vector<Edge> edges;
-      std::vector<mbogo_weight_t> weights;
-      connectEdges(targets, edges, weights);
-MOOSTrace("edges.size: %s\n", edges.size());
-std::this_thread::sleep_for(std::chrono::seconds(4));
-MOOSTrace("weights.size: %s\n", weights.size());
-std::this_thread::sleep_for(std::chrono::seconds(4));
+//      std::vector<Edge> edges;
+//      std::vector<mbogo_weight_t> weights;
+//      connectEdges(targets, edges, weights);
+//MOOSTrace("edges.size: %s\n", edges.size());
+//std::this_thread::sleep_for(std::chrono::seconds(4));
+//MOOSTrace("weights.size: %s\n", weights.size());
+//std::this_thread::sleep_for(std::chrono::seconds(4));
 
-      g = new Graph(edges.data(), edges.size(), weights.data(), numTargets);
+//      g = new Graph(edges.data(), edges.size(), weights.data(), numTargets);
+      g = new Graph(__edges, __num_edges, __weights, __num_nodes);
 
       // TODO add me to the graph
 
