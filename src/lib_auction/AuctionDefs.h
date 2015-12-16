@@ -37,5 +37,6 @@ std::string getBidVar(int id);
 std::string getPathVar(int id);
 
 std::string pathToString(Loc locs[], size_t numLocs);
+std::string getPathVarVal(std::string sPath);
 
 #endif /*AUCTION_DEFS_H_*/

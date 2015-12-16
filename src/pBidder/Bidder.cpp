@@ -188,7 +188,7 @@ Bidder::performBiddingRound(void)
       path = Path::fromTree(tree);
       dp.dprintf(LVL_BID, "Path:\n%s\n", path->toString().c_str());
 
-      cost = path->getTotalCost(g->getGraph());//= get_path_cost(g, path); // TODO
+      cost = path->getTotalCost(g->getGraph());
       bid = cost - rtc;
 
       delete path;
@@ -227,8 +227,9 @@ Bidder::performFinalCalc(void)
   Path *path = Path::fromTree(tree);
   Loc *locs = new Loc[path->getLength()];
 
+  // Debug output
   DebugLevel LVL_FINAL_PATH = LVL_MID_VERB;
-  if (dp.isValidLevel(LVL_FINAL_PATH))
+  if (dp.isValidLevel(LVL_FINAL_PATH)) // extra check to avoid extra work
   {
     dp.dprintf(LVL_FINAL_PATH, "Final allocated:\n");
     int count = 0;
@@ -240,12 +241,15 @@ Bidder::performFinalCalc(void)
     dp.dprintf(LVL_FINAL_PATH, "Final path:\n%s\n", path->toString().c_str());
   }
 
+  // Convert the path indices to those in the origin graph
   path->convertPath(sub->getParentIndices());
   dp.dprintf(LVL_FINAL_PATH, "Converted path:\n%s\n", path->toString().c_str());
 
+  // Get the coordinates of the vertices
   path->getLocations(__locations, locs);
 
-  doNotify(getPathVar(id), pathToString(locs, path->getLength()));
+  // Send the path to the MOOSDB
+  doNotify(getPathVar(id), getPathVarVal(pathToString(locs, path->getLength())));
 
   delete sub;
   delete tree;
