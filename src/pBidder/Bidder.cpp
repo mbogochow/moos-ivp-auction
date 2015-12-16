@@ -18,8 +18,11 @@
 
 #include "MBUtils.h"
 
-#include <algorithm> // std::remove
 #include <boost/lexical_cast.hpp>
+
+#include <algorithm> // std::remove
+#include <chrono>
+#include <thread>
 
 Bidder::Bidder(void)
 {
@@ -145,8 +148,10 @@ Bidder::Iterate(void)
     delete locs;
 
     // Exit pBidder
-     doNotify("EXITED_NORMALLY", "pBidder");
-     exit(0);
+    doNotify("EXITED_NORMALLY", "pBidder");
+    // Ensure data is passed to auctioneer
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000 * 10));
+    exit(0);
   }
 
   return ret;
