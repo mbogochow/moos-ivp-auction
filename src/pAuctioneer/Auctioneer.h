@@ -32,10 +32,14 @@ public:
   bool OnConnectToServer(void);
 
 private:
+  // Absolute values
+  size_t numBidders;
+  size_t numTargets;
+
+  // Per round values
   size_t roundNumber;
-  int numberOfBidders;
+  size_t numRecvdBids;
   Bid *bids;
-  int numReceivedBids;
 };
 
 #endif /* MBOGO_AUCTIONEER_H_ */

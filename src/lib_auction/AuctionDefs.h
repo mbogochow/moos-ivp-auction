@@ -11,6 +11,7 @@
 
 const std::string MVAR_BID_WINNER  = "BID_WINNER";
 const std::string MVAR_BID_START   = "BID_START";
+const std::string MVAR_BID_TARGETS = "BID_TARGETS";
 const std::string MVAR_BID_HEADER  = "BID_V";
 const std::string MVAR_PATH_HEADER = "PATH_UPDATE_V";
 const std::string MVAR_PATH        = "points";
@@ -35,8 +36,12 @@ int getBidder(std::string bidHeader);
 std::string getVar(std::string header, int id);
 std::string getBidVar(int id);
 std::string getPathVar(int id);
+std::string getPathVarVal(std::string sPath);
 
 std::string pathToString(Loc locs[], size_t numLocs);
-std::string getPathVarVal(std::string sPath);
+void pathFromString(std::string str, std::vector<Loc> path);
+size_t getStringPathSize(std::string sPath);
+
+double getDistance(Loc loc1, Loc loc2);
 
 #endif /*AUCTION_DEFS_H_*/

@@ -8,7 +8,6 @@
  */
 
 #include "Auctioneer.h"
-#include "../lib_graphs/defs.h"
 #include "../lib_auction/AuctionDefs.h"
 #include "../lib_auction/DebugPrinter.h"
 
@@ -20,12 +19,12 @@
 
 Auctioneer::Auctioneer(void)
 {
-  m_iterations = 0;
+  numBidders = 0;
+  numTargets = 0;
 
   roundNumber = 0;
-  numberOfBidders = -1;
+  numRecvdBids = 0;
   bids = nullptr;
-  numReceivedBids = 0;
 }
 
 Auctioneer::~Auctioneer(void)
@@ -39,11 +38,11 @@ Auctioneer::OnNewMail(MOOSMSG_LIST &NewMail)
 {
   bool ret = AuctionMOOSApp::OnNewMail(NewMail);
 
-  dp.dprintf(LVL_MAX_VERB, "roundNum <= numNodes (%lu <= %lu)?\n", roundNumber, __num_nodes);
-  if (roundNumber <= __num_nodes)
+  dp.dprintf(LVL_MAX_VERB, "roundNum <= numNodes (%lu <= %lu)?\n", roundNumber, numTargets);
+  if (roundNumber <= numTargets)
   {
     MOOSMSG_LIST::reverse_iterator p;
-    for(p = NewMail.rbegin(); p!=NewMail.rend(); p++)
+    for(p = NewMail.rbegin(); p != NewMail.rend(); p++)
     {
       CMOOSMsg &msg = *p;
       std::string key   = msg.GetKey();
@@ -52,7 +51,7 @@ Auctioneer::OnNewMail(MOOSMSG_LIST &NewMail)
       {
         int bidder = getBidder(key);
         bids[bidder] = bidFromString(msg.GetString());
-        numReceivedBids += 1;
+        numRecvdBids += 1;
         dp.dprintf(LVL_MIN_VERB, "Got %s mail: %s\n", key.c_str(),
             msg.GetString().c_str());
       }
@@ -67,18 +66,18 @@ Auctioneer::Iterate(void)
 {
   bool ret = AuctionMOOSApp::Iterate();
 
-  dp.dprintf(LVL_MAX_VERB, "roundNum <= numNodes (%lu <= %lu)?\n", roundNumber, __num_nodes);
-  if (roundNumber <= __num_nodes)
+  dp.dprintf(LVL_MAX_VERB, "roundNum <= numNodes (%lu <= %lu)?\n", roundNumber, numTargets);
+  if (roundNumber <= numTargets)
   {
-    dp.dprintf(LVL_MID_VERB, "numReceivedBids=%i\n", numReceivedBids);
+    dp.dprintf(LVL_MID_VERB, "numReceivedBids=%i\n", numRecvdBids);
 
     if (roundNumber == 0)
       doNotify(MVAR_BID_START, ++roundNumber);
-    else if (numReceivedBids == numberOfBidders)
+    else if (numRecvdBids == numBidders)
     { // All bids received for round
       WinningBid winner = { 0, MAX_VERTEX, MAX_WEIGHT };
       // Calculate winner
-      for (int i = 0; i < numberOfBidders; i++)
+      for (size_t i = 0; i < numBidders; i++)
       {
         if (bids[i].second < winner.bid)
         {
@@ -92,7 +91,7 @@ Auctioneer::Iterate(void)
       doNotify(MVAR_BID_WINNER, winningBidToString(winner));
       doNotify(MVAR_BID_START, ++roundNumber);
 
-      numReceivedBids = 0;
+      numRecvdBids = 0;
     }
     else
     {
@@ -117,7 +116,7 @@ Auctioneer::OnStartUp(void)
 {
   bool ret;
 
-  // Read the DebugOutput configuration field
+  // DebugOutput config
   int debugLevel;
   if (!m_MissionReader.GetConfigurationParam("DebugOutput", debugLevel))
     debugLevel = LVL_OFF;
@@ -125,14 +124,33 @@ Auctioneer::OnStartUp(void)
 
   ret = AuctionMOOSApp::OnStartUp();
 
-  if (!m_MissionReader.GetConfigurationParam("NumBidders", numberOfBidders))
+  // NumBidders config
+  std::string tmp;
+  if (!m_MissionReader.GetConfigurationParam("NumBidders", tmp))
   {
     MOOSTrace("Warning: parameter 'NumBidders' not specified.\n");
     MOOSTrace("Terminating\n");
     exit(-1);
   }
   else
-    this->bids = new Bid[numberOfBidders];
+  {
+    numBidders = boost::lexical_cast<size_t>(tmp);
+    this->bids = new Bid[numBidders];
+  }
+
+  // Targets config
+  std::string targets;
+  if (!m_MissionReader.GetConfigurationParam("Targets", targets))
+  {
+    MOOSTrace("Warning: parameter 'Targets' not specified.\n");
+    MOOSTrace("Terminating\n");
+    exit(-1);
+  }
+  else
+  {
+    numTargets = getStringPathSize(targets);
+    doNotify(MVAR_BID_TARGETS, targets);
+  }
 
   RegisterVariables();
 
@@ -150,7 +168,7 @@ Auctioneer::OnConnectToServer(void)
 void
 Auctioneer::RegisterVariables(void)
 {
-  for (int i = 0; i < numberOfBidders; i++)
+  for (size_t i = 0; i < numBidders; i++)
   {
     std::string key = getBidVar(i);
     dp.dprintf(LVL_MIN_VERB, "Registering %s\n", key.c_str());

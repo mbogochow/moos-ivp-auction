@@ -7,4 +7,6 @@ ProcessConfig = pBidder
   CommsTick = 4
 
   NumBidders = 1    // The number of bidders in the community
+  Targets = 7,0:15,15:30,15:45,15:60,0:45,-15:30,-15:15,-15:22,0
+  //Targets = 25,0:50,50:100,50:150,50:200,0:150,-50:100,-50:50,-50:75,0
 }

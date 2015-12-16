@@ -9,6 +9,8 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 
+#include <cmath>
+
 const size_t __num_nodes = 9;
 const size_t __num_edges = 36;
 Edge __edges[__num_edges] = {
@@ -136,3 +138,33 @@ std::string getPathVarVal(std::string sPath)
   return ss.str();
 }
 
+void pathFromString(std::string str, std::vector<Loc> path)
+{
+  std::vector<std::string> locs;
+  boost::split(locs, str, boost::is_any_of(":"));
+  path.reserve(locs.size());
+  for (std::vector<std::string>::iterator it = locs.begin(); it != locs.end();
+      it++)
+  {
+    std::vector<std::string> points;
+    boost::split(points, *it, boost::is_any_of(","));
+    assert(points.size() == 2);
+    path.push_back(std::make_pair(
+        boost::lexical_cast<double>(points.front()),
+        boost::lexical_cast<double>(points.back())));
+  }
+}
+
+size_t getStringPathSize(std::string sPath)
+{
+  std::vector<std::string> locs;
+  boost::split(locs, sPath, boost::is_any_of(":"));
+  return locs.size();
+}
+
+double getDistance(const Loc loc1, const Loc loc2)
+{
+  return std::sqrt(
+      std::pow(loc2.first - loc1.first, 2) -
+      std::pow(loc2.second - loc1.second, 2));
+}
