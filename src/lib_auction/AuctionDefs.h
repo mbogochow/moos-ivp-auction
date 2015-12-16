@@ -44,4 +44,9 @@ size_t getStringPathSize(std::string sPath);
 
 double getDistance(Loc loc1, Loc loc2);
 
+int nthTriangularNumber(int n);
+
+void connectEdges(std::vector<Loc> targets, std::vector<Edge> edges,
+    std::vector<mbogo_weight_t> weights);
+
 #endif /*AUCTION_DEFS_H_*/

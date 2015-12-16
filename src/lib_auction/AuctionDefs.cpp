@@ -168,3 +168,31 @@ double getDistance(const Loc loc1, const Loc loc2)
       std::pow(loc2.first - loc1.first, 2) -
       std::pow(loc2.second - loc1.second, 2));
 }
+
+int nthTriangularNumber(const int n)
+{
+  int sum = 0;
+  for (int i = 1; i <= n; i++)
+    sum += i;
+  return sum;
+}
+
+void connectEdges(std::vector<Loc> targets, std::vector<Edge> edges,
+    std::vector<mbogo_weight_t> weights)
+{
+  size_t numTargets = targets.size();
+  int numEdges = nthTriangularNumber(targets.size());
+  Loc *targs = targets.data();
+
+  edges.reserve(numEdges);
+  weights.reserve(numEdges);
+
+  for (size_t i = 0; i < numTargets; i++)
+  {
+    for (size_t j = i + 1; j < numTargets; j++)
+    {
+      edges.push_back(std::make_pair(i, j));
+      weights.push_back(getDistance(targs[i], targs[j]));
+    }
+  }
+}

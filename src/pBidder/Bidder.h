@@ -36,6 +36,7 @@ public:
 
 private:
   Graph *g;
+  std::vector<Loc> targets;
   std::vector<Vertex> allocated;
   std::vector<Vertex> unallocated;
   mbogo_weight_t rtc;

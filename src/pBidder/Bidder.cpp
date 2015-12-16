@@ -12,7 +12,7 @@
 #include "../lib_graphs/Subgraph.h"
 #include "../lib_graphs/SpanningTree.h"
 #include "../lib_graphs/Path.h"
-#include "../lib_graphs/defs.h"
+//#include "../lib_graphs/defs.h"
 #include "../lib_auction/AuctionDefs.h"
 #include "../lib_auction/DebugPrinter.h"
 
@@ -28,15 +28,16 @@ Bidder::Bidder(void)
 {
   m_iterations = 0;
 
-  g = new Graph(__edges, __num_edges, __weights, __num_nodes);
-
-  // TODO add me to the graph
-
-  allocated.reserve(__num_nodes);
-  unallocated.reserve(__num_nodes);
-
-  for (Vertex i = 0; i < __num_nodes; i++)
-    unallocated.push_back(i);
+//  g = new Graph(__edges, __num_edges, __weights, __num_nodes);
+//
+//  // TODO add me to the graph
+//
+//  allocated.reserve(__num_nodes);
+//  unallocated.reserve(__num_nodes);
+//
+//  for (Vertex i = 0; i < __num_nodes; i++)
+//    unallocated.push_back(i);
+  g = nullptr;
 
   rtc = 0;
 
@@ -61,11 +62,31 @@ Bidder::OnNewMail(MOOSMSG_LIST &NewMail)
   if (roundNumber <= g->getNumVertices())
   {
     MOOSMSG_LIST::reverse_iterator p;
-    for(p = NewMail.rbegin(); p!=NewMail.rend(); p++) {
+    for(p = NewMail.rbegin(); p != NewMail.rend(); p++)
+    {
       CMOOSMsg &msg = *p;
       std::string key   = msg.GetKey();
 
-      if (key == MVAR_BID_START)
+      if (key == MVAR_BID_TARGETS && g == nullptr) // ignore if already have g
+      {
+        std::string sTargets = msg.GetString();
+        pathFromString(sTargets, targets);
+        size_t numTargets = targets.size();
+        std::vector<Edge> edges;
+        std::vector<mbogo_weight_t> weights;
+        connectEdges(targets, edges, weights);
+
+        g = new Graph(edges.data(), edges.size(), weights.data(), numTargets);
+
+        // TODO add me to the graph
+
+        allocated.reserve(numTargets);
+        unallocated.reserve(numTargets);
+
+        for (Vertex i = 0; i < numTargets; i++)
+          unallocated.push_back(i);
+      }
+      else if (key == MVAR_BID_START)
       {
         size_t num = boost::lexical_cast<size_t>(msg.GetString());
         if (num > roundNumber) // ignore duplicate messages
