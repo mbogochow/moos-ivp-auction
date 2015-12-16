@@ -92,6 +92,8 @@ Auctioneer::Iterate(void)
     else
     { // Keep sending the round number in case they didn't get the message.
       doNotify(MVAR_BID_START, roundNumber);
+      if (roundNumber == 1)
+        doNotify(MVAR_BID_TARGETS, targets);
     }
   }
   else
@@ -134,7 +136,6 @@ Auctioneer::OnStartUp(void)
     if (ret)
     {
       // Targets config
-      std::string targets;
       if (!m_MissionReader.GetConfigurationParam("Targets", targets))
         ret = MissingRequiredParam("Targets");
       else

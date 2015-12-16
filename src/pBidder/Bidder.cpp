@@ -67,11 +67,21 @@ MOOSTrace("key=%s, g==nullptr=%s\n", key.c_str(), boost::lexical_cast<std::strin
     if (key == MVAR_BID_TARGETS && g == nullptr) // ignore if already have g
     {
       std::string sTargets = msg.GetString();
+MOOSTrace("sTargets: %s\n", sTargets.c_str());
+std::this_thread::sleep_for(std::chrono::seconds(4));
       pathFromString(sTargets, targets);
+MOOSTrace("HERE\n");
+std::this_thread::sleep_for(std::chrono::seconds(4));
       size_t numTargets = targets.size();
+MOOSTrace("targets.size: %s\n", targets.size());
+std::this_thread::sleep_for(std::chrono::seconds(4));
       std::vector<Edge> edges;
       std::vector<mbogo_weight_t> weights;
       connectEdges(targets, edges, weights);
+MOOSTrace("edges.size: %s\n", edges.size());
+std::this_thread::sleep_for(std::chrono::seconds(4));
+MOOSTrace("weights.size: %s\n", weights.size());
+std::this_thread::sleep_for(std::chrono::seconds(4));
 
       g = new Graph(edges.data(), edges.size(), weights.data(), numTargets);
 

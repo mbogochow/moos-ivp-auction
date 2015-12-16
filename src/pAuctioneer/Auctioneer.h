@@ -37,6 +37,8 @@ private:
   size_t numBidders;
   /** Number of targets up for auction */
   size_t numTargets;
+  /** String value of targets */
+  std::string targets;
 
   // Per round values
   /** The current round number; controlled by auctioneer */
