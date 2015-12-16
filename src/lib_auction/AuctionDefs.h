@@ -38,15 +38,16 @@ std::string getBidVar(int id);
 std::string getPathVar(int id);
 std::string getPathVarVal(std::string sPath);
 
-std::string pathToString(Loc locs[], size_t numLocs);
-void pathFromString(std::string str, std::vector<Loc> path);
+std::string pathToString(Point path[], size_t pathSize);
+void pathFromString(std::string str, std::vector<Point> path);
+Point pointFromString(std::string str);
 size_t getStringPathSize(std::string sPath);
 
-double getDistance(Loc loc1, Loc loc2);
+double getDistance(Point p1, Point p2);
 
 int nthTriangularNumber(int n);
 
-void connectEdges(std::vector<Loc> targets, std::vector<Edge> edges,
+void connectEdges(std::vector<Point> targets, std::vector<Edge> edges,
     std::vector<mbogo_weight_t> weights);
 
 #endif /*AUCTION_DEFS_H_*/

@@ -91,7 +91,7 @@ Path::getTotalCost(UndirectedGraph *const g)
 }
 
 void
-Path::getLocations(Loc *locations, Loc *locs)
+Path::getLocations(Point *locations, Point *locs)
 {
   for (size_t i = 0; i < length; i++)
     locs[i] = locations[path.data()[i]];

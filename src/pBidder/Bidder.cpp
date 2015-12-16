@@ -12,7 +12,6 @@
 #include "../lib_graphs/Subgraph.h"
 #include "../lib_graphs/SpanningTree.h"
 #include "../lib_graphs/Path.h"
-//#include "../lib_graphs/defs.h"
 #include "../lib_auction/AuctionDefs.h"
 #include "../lib_auction/DebugPrinter.h"
 
@@ -152,6 +151,11 @@ Bidder::Iterate(void)
       doNotify("EXITED_NORMALLY", "pBidder");
       // Ensure all data makes it to the MOOSDB
       std::this_thread::sleep_for(std::chrono::seconds(10));
+      // OR
+        // SetQuitOnFailedIterate(true);
+        // ret = false;
+      // OR
+        // RequestQuit();
       exit(0);
     }
   }
@@ -248,7 +252,7 @@ Bidder::performFinalCalc(void)
   Subgraph *sub = Subgraph::fromGraph(g, allocated);
   SpanningTree *tree = SpanningTree::fromGraph(sub->getGraph());
   Path *path = Path::fromTree(tree);
-  Loc *locs = new Loc[path->getLength()];
+  Point *pathPoints = new Point[path->getLength()];
 
   // Debug output
   DebugLevel LVL_FINAL_PATH = LVL_MID_VERB;
@@ -256,7 +260,8 @@ Bidder::performFinalCalc(void)
   {
     dp.dprintf(LVL_FINAL_PATH, "Final allocated:\n");
     int count = 0;
-    for (std::vector<Vertex>::iterator it = allocated.begin(); it != allocated.end(); it++)
+    for (std::vector<Vertex>::iterator it = allocated.begin();
+        it != allocated.end(); it++)
     {
       dp.dprintf(LVL_FINAL_PATH, "\tallocated[%i]:%s\n", count++,
           boost::lexical_cast<std::string>(*it).c_str());
@@ -269,15 +274,16 @@ Bidder::performFinalCalc(void)
   dp.dprintf(LVL_FINAL_PATH, "Converted path:\n%s\n", path->toString().c_str());
 
   // Get the coordinates of the vertices
-  path->getLocations(__locations, locs);
+  path->getLocations(targets.data(), pathPoints);
 
   // Send the path to the MOOSDB
-  doNotify(getPathVar(id), getPathVarVal(pathToString(locs, path->getLength())));
+  doNotify(getPathVar(id),
+      getPathVarVal(pathToString(pathPoints, path->getLength())));
 
   delete sub;
   delete tree;
   delete path;
-  delete locs;
+  delete pathPoints;
 }
 
 bool
@@ -294,12 +300,14 @@ Bidder::OnStartUp(void)
   ret = AuctionMOOSApp::OnStartUp();
 
   // Read the AgentID configuration field
-  if (!m_MissionReader.GetConfigurationParam("AgentID", id))
-  {
-    MOOSTrace("Warning: parameter 'AgentID' not specified.\n");
-    MOOSTrace("Terminating\n");
-    exit(-1);
-  }
+  if (ret && !m_MissionReader.GetConfigurationParam("AgentID", id))
+    ret = MissingRequiredParam("AgentID");
+
+  std::string tmp;
+  if (ret && !m_MissionReader.GetConfigurationParam("START_POS", tmp))
+    ret = MissingRequiredParam("START_POS");
+  else
+    startPos = pointFromString(tmp);
 
   RegisterVariables();
 

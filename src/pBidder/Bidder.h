@@ -42,7 +42,7 @@ private:
   /** The graph of targets */
   Graph *g;
   /** The list of target locations */
-  std::vector<Loc> targets;
+  std::vector<Point> targets;
   /** The current list of unallocated targets */
   std::vector<Vertex> unallocated;
 
@@ -51,6 +51,8 @@ private:
   std::vector<Vertex> allocated;
   /** Bidder's current robot tree cost for my allocated nodes */
   mbogo_weight_t rtc;
+  /** The starting location of the bidder agent */
+  Point startPos;
   /** The Bidder's ID */
   int id;
 

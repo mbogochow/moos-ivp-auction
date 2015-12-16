@@ -53,7 +53,7 @@ public:
    * @param locs[out] the locations of the vertices in the path in order of
    *                  the path
    */
-  void getLocations(Loc *locations, Loc *locs);
+  void getLocations(Point *locations, Point *locs);
 
   /** Get the length of the path in number of vertices. */
   size_t getLength(void) { return length; }

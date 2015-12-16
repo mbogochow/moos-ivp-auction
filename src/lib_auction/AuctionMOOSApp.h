@@ -48,6 +48,12 @@ protected:
     }
     return ret;
   }
+
+  bool MissingRequiredParam(std::string param)
+  {
+    MOOSTrace("ERROR: required parameter '%s' not specified.\n", param.c_str());
+    return MOOSFail("Terminating\n");
+  }
 };
 
 #endif /* MBOGO_AUCTIONMOOSAPP_H_ */
