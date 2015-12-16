@@ -101,7 +101,7 @@ void
 Path::convertPath(Vertex *path)
 {
   std::vector<Vertex> tempPath;
-  tempPath.reserve(length);
+  tempPath.resize(length);
   for (size_t i = 0; i < length; i++)
     tempPath[i] = path[this->path[i]];
   this->path = tempPath;
