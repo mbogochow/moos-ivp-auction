@@ -20,6 +20,8 @@ public:
 
   void dprintf(DebugLevel level, const char *format, ...);
   void setLevel(DebugLevel level) throw(int);
+  DebugLevel getLevel(void) const;
+  bool isValidLevel(DebugLevel level) const;
 
 private:
   DebugLevel level;

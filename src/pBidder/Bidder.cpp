@@ -119,17 +119,21 @@ Bidder::Iterate(void)
     Path *path = Path::fromTree(tree);
     Loc *locs = new Loc[path->getLength()];
 
-dp.dprintf(LVL_MIN_VERB, "Final allocated:\n");
-int count = 0;
-for (std::vector<Vertex>::iterator it = allocated.begin(); it != allocated.end(); it++)
-{
-  dp.dprintf(LVL_MIN_VERB, "\tallocated[%i]:%s\n", count++,
-      boost::lexical_cast<std::string>(*it).c_str());
-}
-dp.dprintf(LVL_MIN_VERB, "Final path:\n%s\n", path->toString().c_str());
+    DebugLevel LVL_FINAL_PATH = LVL_MID_VERB;
+    if (dp.isValidLevel(LVL_FINAL_PATH))
+    {
+      dp.dprintf(LVL_FINAL_PATH, "Final allocated:\n");
+      int count = 0;
+      for (std::vector<Vertex>::iterator it = allocated.begin(); it != allocated.end(); it++)
+      {
+        dp.dprintf(LVL_FINAL_PATH, "\tallocated[%i]:%s\n", count++,
+            boost::lexical_cast<std::string>(*it).c_str());
+      }
+      dp.dprintf(LVL_FINAL_PATH, "Final path:\n%s\n", path->toString().c_str());
+    }
 
     path->convertPath(sub->getParentIndices());
-dp.dprintf(LVL_MIN_VERB, "Converted path:\n%s\n", path->toString().c_str());
+    dp.dprintf(LVL_FINAL_PATH, "Converted path:\n%s\n", path->toString().c_str());
 
     path->getLocations(__locations, locs);
 
@@ -141,8 +145,8 @@ dp.dprintf(LVL_MIN_VERB, "Converted path:\n%s\n", path->toString().c_str());
     delete locs;
 
     // Exit pBidder
-    // doNotify("EXITED_NORMALLY", "pBidder");
-    // exit(0);
+     doNotify("EXITED_NORMALLY", "pBidder");
+     exit(0);
   }
 
   return ret;

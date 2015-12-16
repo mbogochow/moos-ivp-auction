@@ -24,8 +24,8 @@ DebugPrinter::~DebugPrinter(void)
 void
 DebugPrinter::dprintf(const DebugLevel level, const char *format, ...)
 {
-//  if (level <= this->level && level != LVL_OFF)
-//  {
+  if (isValidLevel(level))
+  {
     const unsigned int MAX_TRACE_STR = 2048;
     char buf[MAX_TRACE_STR * 2];
 
@@ -37,7 +37,7 @@ DebugPrinter::dprintf(const DebugLevel level, const char *format, ...)
     va_end(args);
 
     MOOSTrace(buf);
-//  }
+  }
 }
 
 void
@@ -46,4 +46,16 @@ DebugPrinter::setLevel(const DebugLevel level) throw(int)
   if (level > LVL_MAX_VERB)
     throw level;
   this->level = level;
+}
+
+DebugLevel
+DebugPrinter::getLevel(void) const
+{
+  return level;
+}
+
+bool
+DebugPrinter::isValidLevel(DebugLevel level) const
+{
+  return level <= this->level && level != LVL_OFF;
 }
