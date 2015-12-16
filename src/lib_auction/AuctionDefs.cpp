@@ -31,9 +31,13 @@ int __weights[__num_edges] = {
     4,       2,
     9 };
 Loc __locations[__num_nodes] = {
-    Loc(0.5, 0), Loc(1, 1), Loc(2, 1), Loc(3, 1),
-    Loc(4, 0), Loc(3, -1), Loc(2, -1), Loc(1, -1), Loc(1.5, 0)
+    Loc(7, 0), Loc(15, 15), Loc(30, 15), Loc(45, 15),
+    Loc(60, 0), Loc(45, -15), Loc(30, -15), Loc(15, -15), Loc(22, 0)
 };
+//Loc __locations[__num_nodes] = {
+//    Loc(0.5, 0), Loc(1, 1), Loc(2, 1), Loc(3, 1),
+//    Loc(4, 0), Loc(3, -1), Loc(2, -1), Loc(1, -1), Loc(1.5, 0)
+//};
 
 std::string pathToString(Loc path[], const size_t pathSize)
 {
