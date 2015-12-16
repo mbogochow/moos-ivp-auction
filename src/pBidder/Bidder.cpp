@@ -97,36 +97,25 @@ Bidder::OnNewMail(MOOSMSG_LIST &NewMail)
   {
     CMOOSMsg &msg = *p;
     std::string key   = msg.GetKey();
-MOOSTrace("key=%s, g==nullptr=%s\n", key.c_str(), boost::lexical_cast<std::string>(g==nullptr).c_str());
+
     if (key == MVAR_BID_TARGETS && g == nullptr) // ignore if already have g
     {
       std::string sTargets = msg.GetString();
-MOOSTrace("sTargets: %s\n", sTargets.c_str());
-//std::this_thread::sleep_for(std::chrono::seconds(4));
       pathFromString(sTargets, targets);
-MOOSTrace("HERE\n");
-MOOSTrace("HERE2\n");
-MOOSTrace("HERE3\n");
-//std::this_thread::sleep_for(std::chrono::seconds(4));
+
       size_t numTargets = targets.size();
-MOOSTrace("targets.size: %lu\n", numTargets);
-//std::this_thread::sleep_for(std::chrono::seconds(4));
+      dp.dprintf(LVL_MAX_VERB, "Parsed %lu targets from %s\n", numTargets,
+          sTargets);
+
       std::vector<Edge> edges;
       std::vector<mbogo_weight_t> weights;
       connectEdges(targets, edges, weights);
-MOOSTrace("edges.size: %lu\n", edges.size());
-//std::this_thread::sleep_for(std::chrono::seconds(4));
-MOOSTrace("weights.size: %lu\n", weights.size());
-//std::this_thread::sleep_for(std::chrono::seconds(4));
+      dp.dprintf(LVL_MAX_VERB, "Connected %lu edges\n", edges.size());
 
       g = new Graph(edges.data(), edges.size(), weights.data(), numTargets);
-MOOSTrace("Graph:\n%s\n", g->toString().c_str());
-//      g = new Graph(__edges, __num_edges, __weights, __num_nodes);
-std::this_thread::sleep_for(std::chrono::seconds(30));
+      dp.dprintf(LVL_MAX_VERB, "Generated Graph:\n%s\n", g->toString().c_str());
 
       // TODO add me to the graph
-
-//      size_t numTargets = __num_nodes;
 
       allocated.reserve(numTargets);
       unallocated.reserve(numTargets);
