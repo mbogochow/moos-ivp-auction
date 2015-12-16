@@ -25,8 +25,6 @@
 
 Bidder::Bidder(void)
 {
-  m_iterations = 0;
-
 //  g = new Graph(__edges, __num_edges, __weights, __num_nodes);
 //
 //  // TODO add me to the graph
@@ -107,16 +105,18 @@ MOOSTrace("sTargets: %s\n", sTargets.c_str());
 //std::this_thread::sleep_for(std::chrono::seconds(4));
       pathFromString(sTargets, targets);
 MOOSTrace("HERE\n");
+MOOSTrace("HERE2\n");
+MOOSTrace("HERE3\n");
 //std::this_thread::sleep_for(std::chrono::seconds(4));
       size_t numTargets = targets.size();
-MOOSTrace("targets.size: %s\n", numTargets);
+MOOSTrace("targets.size: %lu\n", numTargets);
 //std::this_thread::sleep_for(std::chrono::seconds(4));
       std::vector<Edge> edges;
       std::vector<mbogo_weight_t> weights;
       connectEdges(targets, edges, weights);
-MOOSTrace("edges.size: %s\n", edges.size());
+MOOSTrace("edges.size: %lu\n", edges.size());
 //std::this_thread::sleep_for(std::chrono::seconds(4));
-MOOSTrace("weights.size: %s\n", weights.size());
+MOOSTrace("weights.size: %lu\n", weights.size());
 //std::this_thread::sleep_for(std::chrono::seconds(4));
 
       g = new Graph(edges.data(), edges.size(), weights.data(), numTargets);

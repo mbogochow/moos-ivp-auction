@@ -18,8 +18,6 @@
 #include "../lib_auction/AuctionDefs.h"
 #include "../lib_auction/AuctionMOOSApp.h"
 
-#include <boost/lexical_cast.hpp>
-
 #include <string>
 
 /**
