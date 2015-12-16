@@ -67,10 +67,20 @@ Bidder::OnNewMail(MOOSMSG_LIST &NewMail)
 
       if (key == MVAR_BID_START)
       {
-        roundUpdated = true;
-        roundNumber += 1;
-        dp.dprintf(LVL_MIN_VERB, "Got %s mail: %s\n", MVAR_BID_START.c_str(),
-            msg.GetString().c_str());
+        int num = boost::lexical_cast<int>(msg.GetString());
+        if (num > roundNumber)
+        {
+          if (num != roundNumber + 1)
+          {
+            MOOSTrace("WARNING: received round number %i while on round %i",
+                num, roundNumber);
+          }
+
+          roundUpdated = true;
+          roundNumber = num;
+          dp.dprintf(LVL_MIN_VERB, "Got %s mail: %i\n", MVAR_BID_START.c_str(),
+              num);
+        }
       }
       else if (key == MVAR_BID_WINNER)
       {
