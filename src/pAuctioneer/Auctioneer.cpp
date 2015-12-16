@@ -39,8 +39,8 @@ Auctioneer::OnNewMail(MOOSMSG_LIST &NewMail)
 {
   bool ret = AuctionMOOSApp::OnNewMail(NewMail);
 
-  dp.dprintf(LVL_MID_VERB, "roundNum < numNodes (%lu < %lu)?\n", roundNumber, __num_nodes);
-  if (roundNumber <= __num_nodes) //TODO come up with better solution of stopping auctioneer
+  dp.dprintf(LVL_MAX_VERB, "roundNum <= numNodes (%lu <= %lu)?\n", roundNumber, __num_nodes);
+  if (roundNumber <= __num_nodes)
   {
     MOOSMSG_LIST::reverse_iterator p;
     for(p = NewMail.rbegin(); p!=NewMail.rend(); p++)
@@ -67,10 +67,10 @@ Auctioneer::Iterate(void)
 {
   bool ret = AuctionMOOSApp::Iterate();
 
-  dp.dprintf(LVL_MID_VERB, "roundNum < numNodes (%lu < %lu)?\n", roundNumber, __num_nodes);
-  if (roundNumber <= __num_nodes) //TODO come up with better solution of stopping auctioneer
+  dp.dprintf(LVL_MAX_VERB, "roundNum <= numNodes (%lu <= %lu)?\n", roundNumber, __num_nodes);
+  if (roundNumber <= __num_nodes)
   {
-    dp.dprintf(LVL_MIN_VERB, "numReceivedBids=%i\n", numReceivedBids);
+    dp.dprintf(LVL_MID_VERB, "numReceivedBids=%i\n", numReceivedBids);
 
     if (roundNumber == 0)
       doNotify(MVAR_BID_START, ++roundNumber);
@@ -95,14 +95,17 @@ Auctioneer::Iterate(void)
       numReceivedBids = 0;
     }
     else
+    {
+      // Keep sending the round number in case they didn't get the message.
       doNotify(MVAR_BID_START, roundNumber);
+    }
   }
   else
   {
     // Exit pAuctioneer
     doNotify("EXITED_NORMALLY", "pAuctioneer");
-//    // Ensure data is passed to auctioneer
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000 * 10));
+    // Give the message some time to get there before closing
+    std::this_thread::sleep_for(std::chrono::seconds(10));
     exit(0);
   }
 

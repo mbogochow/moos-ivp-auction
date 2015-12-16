@@ -49,6 +49,7 @@ private:
   static const DebugLevel LVL_BID = LVL_MAX_VERB;
 
   void performBiddingRound(void);
+  void performFinalCalc(void);
 };
 
 #endif /* MBOGO_BIDDER_H_ */

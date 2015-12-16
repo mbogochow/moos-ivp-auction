@@ -57,8 +57,8 @@ Bidder::OnNewMail(MOOSMSG_LIST &NewMail)
 {
   bool ret = AuctionMOOSApp::OnNewMail(NewMail);
 
-  dp.dprintf(LVL_MID_VERB, "roundNum < numNodes (%lu < %lu)?\n", roundNumber, g->getNumVertices());
-  if (roundNumber <= g->getNumVertices()) //TODO come up with better solution of stopping auctioneer
+  dp.dprintf(LVL_MAX_VERB, "roundNum <= numNodes (%lu <= %lu)?\n", roundNumber, g->getNumVertices());
+  if (roundNumber <= g->getNumVertices())
   {
     MOOSMSG_LIST::reverse_iterator p;
     for(p = NewMail.rbegin(); p!=NewMail.rend(); p++) {
@@ -113,7 +113,7 @@ Bidder::Iterate(void)
     winnerUpdated = false;
   }
 
-  dp.dprintf(LVL_MID_VERB, "roundNum <= numNodes (%lu < %lu)?\n", roundNumber, g->getNumVertices());
+  dp.dprintf(LVL_MAX_VERB, "roundNum <= numNodes (%lu <= %lu)?\n", roundNumber, g->getNumVertices());
   if (roundNumber <= g->getNumVertices())
   {
     if (roundUpdated)
@@ -122,45 +122,16 @@ Bidder::Iterate(void)
       roundUpdated = false;
     }
   }
-  else //TODO come up with better solution of stopping bidder
+  else
   {
     assert(unallocated.size() == 0);
 
-    // Do final cost calculation and submit path
-    Subgraph *sub = Subgraph::fromGraph(g, allocated);
-    SpanningTree *tree = SpanningTree::fromGraph(sub->getGraph());
-    Path *path = Path::fromTree(tree);
-    Loc *locs = new Loc[path->getLength()];
-
-    DebugLevel LVL_FINAL_PATH = LVL_MID_VERB;
-    if (dp.isValidLevel(LVL_FINAL_PATH))
-    {
-      dp.dprintf(LVL_FINAL_PATH, "Final allocated:\n");
-      int count = 0;
-      for (std::vector<Vertex>::iterator it = allocated.begin(); it != allocated.end(); it++)
-      {
-        dp.dprintf(LVL_FINAL_PATH, "\tallocated[%i]:%s\n", count++,
-            boost::lexical_cast<std::string>(*it).c_str());
-      }
-      dp.dprintf(LVL_FINAL_PATH, "Final path:\n%s\n", path->toString().c_str());
-    }
-
-    path->convertPath(sub->getParentIndices());
-    dp.dprintf(LVL_FINAL_PATH, "Converted path:\n%s\n", path->toString().c_str());
-
-    path->getLocations(__locations, locs);
-
-    doNotify(getPathVar(id), pathToString(locs, path->getLength()));
-
-    delete sub;
-    delete tree;
-    delete path;
-    delete locs;
+    performFinalCalc();
 
     // Exit pBidder
     doNotify("EXITED_NORMALLY", "pBidder");
-    // Ensure data is passed to auctioneer
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000 * 10));
+    // Ensure all data makes it to the MOOSDB
+    std::this_thread::sleep_for(std::chrono::seconds(10));
     exit(0);
   }
 
@@ -245,6 +216,41 @@ Bidder::performBiddingRound(void)
 
   // Send bid to MOOSDB
   doNotify(getBidVar(id), bidToString(currentBid));
+}
+
+void
+Bidder::performFinalCalc(void)
+{
+  // Do final cost calculation and submit path
+  Subgraph *sub = Subgraph::fromGraph(g, allocated);
+  SpanningTree *tree = SpanningTree::fromGraph(sub->getGraph());
+  Path *path = Path::fromTree(tree);
+  Loc *locs = new Loc[path->getLength()];
+
+  DebugLevel LVL_FINAL_PATH = LVL_MID_VERB;
+  if (dp.isValidLevel(LVL_FINAL_PATH))
+  {
+    dp.dprintf(LVL_FINAL_PATH, "Final allocated:\n");
+    int count = 0;
+    for (std::vector<Vertex>::iterator it = allocated.begin(); it != allocated.end(); it++)
+    {
+      dp.dprintf(LVL_FINAL_PATH, "\tallocated[%i]:%s\n", count++,
+          boost::lexical_cast<std::string>(*it).c_str());
+    }
+    dp.dprintf(LVL_FINAL_PATH, "Final path:\n%s\n", path->toString().c_str());
+  }
+
+  path->convertPath(sub->getParentIndices());
+  dp.dprintf(LVL_FINAL_PATH, "Converted path:\n%s\n", path->toString().c_str());
+
+  path->getLocations(__locations, locs);
+
+  doNotify(getPathVar(id), pathToString(locs, path->getLength()));
+
+  delete sub;
+  delete tree;
+  delete path;
+  delete locs;
 }
 
 bool
