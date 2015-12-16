@@ -120,3 +120,10 @@ std::string getPathVar(int id)
   return getVar(MVAR_PATH_HEADER, id);
 }
 
+std::string getPathVarVal(std::string sPath)
+{
+  std::stringstream ss;
+  ss << MVAR_PATH << "=" << sPath;
+  return ss.str();
+}
+

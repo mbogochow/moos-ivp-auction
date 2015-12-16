@@ -85,10 +85,3 @@ Graph::toString(void) const
 
   return os.str();
 }
-
-std::string getPathVarVal(std::string sPath)
-{
-  std::stringstream ss;
-  ss << MVAR_PATH << "=" << sPath;
-  return ss.str();
-}
