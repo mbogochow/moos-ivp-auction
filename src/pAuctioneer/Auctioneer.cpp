@@ -90,8 +90,7 @@ Auctioneer::Iterate(void)
       numRecvdBids = 0;
     }
     else
-    {
-      // Keep sending the round number in case they didn't get the message.
+    { // Keep sending the round number in case they didn't get the message.
       doNotify(MVAR_BID_START, roundNumber);
     }
   }

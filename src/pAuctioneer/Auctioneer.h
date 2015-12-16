@@ -33,12 +33,17 @@ public:
 
 private:
   // Absolute values
+  /** Number of bidders in the auction */
   size_t numBidders;
+  /** Number of targets up for auction */
   size_t numTargets;
 
   // Per round values
+  /** The current round number; controlled by auctioneer */
   size_t roundNumber;
+  /** Number of bids received for current round */
   size_t numRecvdBids;
+  /** The bids received during the current round */
   Bid *bids;
 };
 

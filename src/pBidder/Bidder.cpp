@@ -50,7 +50,8 @@ Bidder::Bidder(void)
 
 Bidder::~Bidder(void)
 {
-  delete g;
+  if (g != nullptr)
+    delete g;
 }
 
 bool
@@ -120,9 +121,9 @@ Bidder::Iterate(void)
   if (g != nullptr)
   {
     if (winnerUpdated)
-    {
+    { // Update info with new winner
       if (winningBid.winner == id)
-      {
+      { // I won so add winning target to my allocated targets
         allocated.push_back(winningBid.target);
         rtc += winningBid.bid;
       }
@@ -136,13 +137,13 @@ Bidder::Iterate(void)
     if (roundNumber <= g->getNumVertices())
     {
       if (roundUpdated)
-      {
+      { // Do round calculations for new round
         performBiddingRound();
         roundUpdated = false;
       }
     }
     else
-    {
+    { // All rounds complete so perform final calculation and post
       assert(unallocated.size() == 0);
 
       performFinalCalc();
@@ -154,6 +155,8 @@ Bidder::Iterate(void)
       exit(0);
     }
   }
+  else
+    dp.dprintf(LVL_MAX_VERB, "Graph not initialized...");
 
   return ret;
 }
