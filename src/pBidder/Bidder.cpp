@@ -124,6 +124,8 @@ std::this_thread::sleep_for(std::chrono::seconds(4));
 
       // TODO add me to the graph
 
+      size_t numTargets = __num_nodes;
+
       allocated.reserve(numTargets);
       unallocated.reserve(numTargets);
 
