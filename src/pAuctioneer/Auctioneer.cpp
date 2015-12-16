@@ -100,7 +100,7 @@ Auctioneer::Iterate(void)
     // Exit pAuctioneer
     doNotify("EXITED_NORMALLY", "pAuctioneer");
 //    // Ensure data is passed to auctioneer
-//    std::this_thread::sleep_for(std::chrono::milliseconds(1000 * 10));
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000 * 10));
     exit(0);
   }
 
