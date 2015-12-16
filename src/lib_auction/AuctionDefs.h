@@ -3,11 +3,11 @@
 #ifndef AUCTION_DEFS_H_
 #define AUCTION_DEFS_H_
 
-#include <string>
-
 #include "../lib_graphs/defs.h"
 
 #include "DebugPrinter.h"
+
+#include <string>
 
 const std::string MVAR_BID_WINNER  = "BID_WINNER";
 const std::string MVAR_BID_START   = "BID_START";
@@ -47,7 +47,7 @@ double getDistance(Point p1, Point p2);
 
 int nthTriangularNumber(int n);
 
-void connectEdges(std::vector<Point> targets, std::vector<Edge> edges,
-    std::vector<mbogo_weight_t> weights);
+void connectEdges(std::vector<Point> targets, std::vector<Edge> &edges,
+    std::vector<mbogo_weight_t> &weights);
 
 #endif /*AUCTION_DEFS_H_*/

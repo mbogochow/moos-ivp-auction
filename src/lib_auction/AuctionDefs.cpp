@@ -135,7 +135,7 @@ size_t getStringPathSize(std::string sPath)
 double getDistance(const Point p1, const Point p2)
 {
   return std::sqrt(
-      std::pow(p2.first - p1.first, 2) - std::pow(p2.second - p1.second, 2));
+      std::pow(p2.first - p1.first, 2) + std::pow(p2.second - p1.second, 2));
 }
 
 int nthTriangularNumber(const int n)
@@ -146,8 +146,8 @@ int nthTriangularNumber(const int n)
   return sum;
 }
 
-void connectEdges(std::vector<Point> targets, std::vector<Edge> edges,
-    std::vector<mbogo_weight_t> weights)
+void connectEdges(std::vector<Point> targets, std::vector<Edge> &edges,
+    std::vector<mbogo_weight_t> &weights)
 {
   size_t numTargets = targets.size();
   int numEdges = nthTriangularNumber(targets.size());

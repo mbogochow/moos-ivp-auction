@@ -6,7 +6,7 @@
 
 typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS,
     boost::property<boost::vertex_distance_t, int>,
-    boost::property<boost::edge_weight_t, int>> UndirectedGraph;
+    boost::property<boost::edge_weight_t, int> > UndirectedGraph;
 typedef boost::graph_traits<UndirectedGraph>::vertex_descriptor Vertex;
 typedef std::pair<Vertex, Vertex> Edge;
 typedef boost::graph_traits<UndirectedGraph>::edge_descriptor EdgeDescriptor;
