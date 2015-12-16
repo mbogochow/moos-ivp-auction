@@ -39,7 +39,7 @@ std::string getPathVar(int id);
 std::string getPathVarVal(std::string sPath);
 
 std::string pathToString(Point path[], size_t pathSize);
-void pathFromString(std::string str, std::vector<Point> path);
+void pathFromString(std::string str, std::vector<Point> &path);
 Point pointFromString(std::string str);
 size_t getStringPathSize(std::string sPath);
 

@@ -170,7 +170,7 @@ Bidder::Iterate(void)
     }
   }
   else
-    dp.dprintf(LVL_MAX_VERB, "Graph not initialized...");
+    dp.dprintf(LVL_MAX_VERB, "Graph not initialized...\n");
 
   return ret;
 }

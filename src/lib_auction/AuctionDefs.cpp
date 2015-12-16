@@ -113,7 +113,7 @@ Point pointFromString(std::string str)
       boost::lexical_cast<double>(points.back()));
 }
 
-void pathFromString(std::string str, std::vector<Point> path)
+void pathFromString(std::string str, std::vector<Point> &path)
 {
   std::vector<std::string> locs;
   boost::split(locs, str, boost::is_any_of(":"));
