@@ -58,58 +58,54 @@ Bidder::OnNewMail(MOOSMSG_LIST &NewMail)
 {
   bool ret = AuctionMOOSApp::OnNewMail(NewMail);
 
-  dp.dprintf(LVL_MAX_VERB, "roundNum <= numNodes (%lu <= %lu)?\n", roundNumber, g->getNumVertices());
-  if (roundNumber <= g->getNumVertices())
+  MOOSMSG_LIST::reverse_iterator p;
+  for(p = NewMail.rbegin(); p != NewMail.rend(); p++)
   {
-    MOOSMSG_LIST::reverse_iterator p;
-    for(p = NewMail.rbegin(); p != NewMail.rend(); p++)
+    CMOOSMsg &msg = *p;
+    std::string key   = msg.GetKey();
+
+    if (key == MVAR_BID_TARGETS && g == nullptr) // ignore if already have g
     {
-      CMOOSMsg &msg = *p;
-      std::string key   = msg.GetKey();
+      std::string sTargets = msg.GetString();
+      pathFromString(sTargets, targets);
+      size_t numTargets = targets.size();
+      std::vector<Edge> edges;
+      std::vector<mbogo_weight_t> weights;
+      connectEdges(targets, edges, weights);
 
-      if (key == MVAR_BID_TARGETS && g == nullptr) // ignore if already have g
+      g = new Graph(edges.data(), edges.size(), weights.data(), numTargets);
+
+      // TODO add me to the graph
+
+      allocated.reserve(numTargets);
+      unallocated.reserve(numTargets);
+
+      for (Vertex i = 0; i < numTargets; i++)
+        unallocated.push_back(i);
+    }
+    else if (key == MVAR_BID_START)
+    {
+      size_t num = boost::lexical_cast<size_t>(msg.GetString());
+      if (num > roundNumber) // ignore duplicate messages
       {
-        std::string sTargets = msg.GetString();
-        pathFromString(sTargets, targets);
-        size_t numTargets = targets.size();
-        std::vector<Edge> edges;
-        std::vector<mbogo_weight_t> weights;
-        connectEdges(targets, edges, weights);
-
-        g = new Graph(edges.data(), edges.size(), weights.data(), numTargets);
-
-        // TODO add me to the graph
-
-        allocated.reserve(numTargets);
-        unallocated.reserve(numTargets);
-
-        for (Vertex i = 0; i < numTargets; i++)
-          unallocated.push_back(i);
-      }
-      else if (key == MVAR_BID_START)
-      {
-        size_t num = boost::lexical_cast<size_t>(msg.GetString());
-        if (num > roundNumber) // ignore duplicate messages
+        if (num != roundNumber + 1)
         {
-          if (num != roundNumber + 1)
-          {
-            MOOSTrace("WARNING: received round number %i while on round %i",
-                num, roundNumber);
-          }
-
-          roundUpdated = true;
-          roundNumber = num;
-          dp.dprintf(LVL_MIN_VERB, "Got %s mail: %i\n", MVAR_BID_START.c_str(),
-              num);
+          MOOSTrace("WARNING: received round number %i while on round %i",
+              num, roundNumber);
         }
+
+        roundUpdated = true;
+        roundNumber = num;
+        dp.dprintf(LVL_MIN_VERB, "Got %s mail: %i\n", MVAR_BID_START.c_str(),
+            num);
       }
-      else if (key == MVAR_BID_WINNER)
-      {
-        winnerUpdated = true;
-        winningBid = winningBidFromString(msg.GetString());
-        dp.dprintf(LVL_MIN_VERB, "Got %s mail: %s\n", MVAR_BID_WINNER.c_str(),
-            winningBid);
-      }
+    }
+    else if (key == MVAR_BID_WINNER)
+    {
+      winnerUpdated = true;
+      winningBid = winningBidFromString(msg.GetString());
+      dp.dprintf(LVL_MIN_VERB, "Got %s mail: %s\n", MVAR_BID_WINNER.c_str(),
+          winningBid);
     }
   }
 

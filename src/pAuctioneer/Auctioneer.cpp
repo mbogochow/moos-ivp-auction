@@ -38,23 +38,19 @@ Auctioneer::OnNewMail(MOOSMSG_LIST &NewMail)
 {
   bool ret = AuctionMOOSApp::OnNewMail(NewMail);
 
-  dp.dprintf(LVL_MAX_VERB, "roundNum <= numNodes (%lu <= %lu)?\n", roundNumber, numTargets);
-  if (roundNumber <= numTargets)
+  MOOSMSG_LIST::reverse_iterator p;
+  for(p = NewMail.rbegin(); p != NewMail.rend(); p++)
   {
-    MOOSMSG_LIST::reverse_iterator p;
-    for(p = NewMail.rbegin(); p != NewMail.rend(); p++)
-    {
-      CMOOSMsg &msg = *p;
-      std::string key   = msg.GetKey();
+    CMOOSMsg &msg = *p;
+    std::string key   = msg.GetKey();
 
-      if (boost::starts_with(key, MVAR_BID_HEADER))
-      {
-        int bidder = getBidder(key);
-        bids[bidder] = bidFromString(msg.GetString());
-        numRecvdBids += 1;
-        dp.dprintf(LVL_MIN_VERB, "Got %s mail: %s\n", key.c_str(),
-            msg.GetString().c_str());
-      }
+    if (boost::starts_with(key, MVAR_BID_HEADER))
+    {
+      int bidder = getBidder(key);
+      bids[bidder] = bidFromString(msg.GetString());
+      numRecvdBids += 1;
+      dp.dprintf(LVL_MIN_VERB, "Got %s mail: %s\n", key.c_str(),
+          msg.GetString().c_str());
     }
   }
 
