@@ -1,0 +1,220 @@
+//*******************************************************
+// ShoreSide Configuration File
+//
+
+ServerHost = localhost
+ServerPort = $(SPORT)
+Community  = $(SNAME)
+
+#include plug_origin_warp.moos
+  
+//--------------------------------------------------------
+Processconfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB          @ NewConsole = false
+  Run = pMarineViewer   @ NewConsole = false
+  Run = pLogger         @ NewConsole = false
+  Run = pHostInfo       @ NewConsole = false
+  Run = uFldShoreBroker @ NewConsole = false
+  Run = uFldNodeComms   @ NewConsole = false
+  Run = pShare          @ NewConsole = false
+  Run = uProcessWatch   @ NewConsole = false
+
+  Run = uXMS            @ NewConsole = false
+  Run = pAuctioneer     @ NewConsole = true
+}
+
+// Processconfig = ANTLER
+// {
+//   MSBetweenLaunches = 100
+
+//   Run = MOOSDB          @ NewConsole = true
+//   Run = pMarineViewer   @ NewConsole = true
+//   Run = pLogger         @ NewConsole = true
+//   Run = pHostInfo       @ NewConsole = true
+//   Run = uFldShoreBroker @ NewConsole = true
+//   Run = uFldNodeComms   @ NewConsole = true
+//   Run = pShare          @ NewConsole = true
+//   Run = uProcessWatch   @ NewConsole = true
+
+//   Run = uXMS            @ NewConsole = true
+//   Run = pAuctioneer     @ NewConsole = false
+// }
+
+#include plug_pShare.moos
+#include plug_uXMS.moos
+
+//--------------------------------------------------
+// pAuctioneer Configuration Block
+
+ProcessConfig = pAuctioneer
+{
+  AppTick       = 1
+  CommsTick     = 1
+
+  DebugOutput   = 3
+  NumBidders    = 2
+  Targets       = 7,0:15,15:30,15:45,15:60,0:45,-15:30,-15:15,-15:22,0
+}
+
+//--------------------------------------------------------
+ProcessConfig = pMarineViewer
+{
+  AppTick    = 4
+  CommsTick  = 4
+
+  TIFF_FILE            = forrest19.tif
+  set_pan_x            = -90
+  set_pan_y            = -280
+  zoom                 = 0.65
+  vehicles_shape_scale = 1.5
+  vehicles_name_mode   = names
+
+  circle_viewable_all = false
+  
+  appcast_viewable = true
+  appcast_color_scheme = indigo
+
+  scope = PSHARE_INPUT_SUMMARY
+  scope = NODE_BROKER_PING
+  scope = DEPLOY_ALL
+  scope = CONTACT_INFO
+
+  action = PERMUTING = true
+  action = PERMUTING = false
+
+  action = WIND_GUSTS = true
+  action = WIND_GUSTS = false
+
+  action = STATION_KEEP_ALL = false
+  action = STATION_KEEP_ALL = true
+
+  button_one   = RUN     # RUN_ALL=true  # DEPLOY_ALL=true 
+  button_one   = MOOS_MANUAL_OVERRIDE_ALL=false 
+  button_one   = AVOID_ALL=true
+  button_one   = STATION_KEEP_ALL=false
+
+  button_two  = STATION   # STATION_KEEP_ALL=true
+}
+
+//--------------------------------------------------
+// uMAC Configuration Block
+
+ProcessConfig = uMAC
+{
+  AppTick       = 1
+  CommsTick     = 1
+}
+
+//--------------------------------------------------
+// uMACView Configuration Block
+
+ProcessConfig = uMACView
+{
+  AppTick       = 3
+  CommsTick     = 3
+
+  nodes_font_size      = medium
+  procs_font_size      = medium
+  appcast_font_size    = small
+  refresh_mode         = events
+  appcast_color_scheme = beige
+
+  appcast_height     = 30
+  appcast_color_scheme = beige
+}
+
+//--------------------------------------------------
+// uFldShoreBroker Configuration Block
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick       = 1
+  CommsTick     = 1
+
+  // Note: [QBRIDGE = FOO]  is shorthand for                    
+  //       [BRIDGE = src=FOO_$V,  alias=FOO] and                
+  //       [BRIDGE = src=FOO_ALL, alias=FOO]
+
+  qbridge  = DEPLOY, RUN, STATION_KEEP, NODE_REPORT, NODE_MESSAGE
+  qbridge  = MOOS_MANUAL_OVERRIDE, APPCAST_REQ, AVOID
+
+  bridge   = src=DRIFT_VECTOR_ADD, alias=DRIFT_VECTOR_ADD
+  bridge   = src=HELM_MAP_CLEAR, alias=HELM_MAP_CLEAR
+
+  bridge = src=BID_WINNER, alias=BID_WINNER
+  bridge = src=BID_START, alias=BID_START
+  bridge = src=BID_TARGETS, alias=BID_TARGETS
+}
+
+//--------------------------------------------------
+// ufldnodecomms Configuration Block
+
+ProcessConfig = uFldNodeComms
+{
+  AppTick       = 2
+  CommsTick     = 2
+
+  comms_range      = 1000 // no effective limit
+  critical_range   = 25 // needed for collision avoidance
+
+  min_msg_interval = 15
+  max_msg_length   = 1000
+
+  groups           = true
+
+  view_node_rpt_pulses = false
+}
+
+//--------------------------------------------------
+// pHostInfo configuration block from plugin
+
+ProcessConfig = pHostInfo
+{
+  AppTick 	= 1
+  CommsTick = 1
+}
+
+//--------------------------------------------------
+// pLogger Configuration Block
+
+ProcessConfig = pLogger
+{
+  AppTick       = 10
+  CommsTick     = 10
+  
+  File          = LOG_SHORESIDE
+  PATH          = ./
+  SyncLog       = true @ 0.2
+  AsyncLog      = true
+  FileTimeStamp = true
+
+	LogAuxSrc     = true
+
+  // Log it all!!!!!
+  WildCardLogging = true 
+
+  WildCardOmitPattern = *_STATUS
+  WildCardOmitPattern = DB_VARSUMMARY
+  WildCardOmitPattern = DB_RWSUMMARY
+}
+
+//--------------------------------------------------------
+// uProcessWatch Configuration Block
+
+ProcessConfig = uProcessWatch
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  allow_retractions = true
+  
+  watch_all = true      // default is true
+
+  nowatch = uXMS*
+  nowatch = uPokeDB*
+
+  summary_wait = 12
+}
