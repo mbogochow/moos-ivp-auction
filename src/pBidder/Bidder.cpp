@@ -55,27 +55,32 @@ Bidder::OnNewMail(MOOSMSG_LIST &NewMail)
 
     if (key == MVAR_BID_TARGETS && g == nullptr) // ignore if already have g
     {
+      // Parse the targets from the message
       std::string sTargets = msg.GetString();
       pathFromString(sTargets, targets);
 
+      // Add my position to the targets
       targets.push_back(startPos);
 
       size_t numTargets = targets.size();
       dp.dprintf(LVL_MAX_VERB, "Parsed %lu targets from %s\n", numTargets,
           sTargets.c_str());
 
+      // Connect edges between all targets and calculate weights
       std::vector<Edge> edges;
       std::vector<mbogo_weight_t> weights;
       connectEdges(targets, edges, weights);
       dp.dprintf(LVL_MAX_VERB, "Connected %lu edges\n", edges.size());
 
+      // Make a graph from the edges
       g = new Graph(edges.data(), edges.size(), weights.data(), numTargets);
       dp.dprintf(LVL_MAX_VERB, "Generated Graph:\n%s\n", g->toString().c_str());
 
+      // Intialize allocated and unallocated targets
       allocated.reserve(numTargets);
       unallocated.reserve(numTargets - 1);
 
-      allocated.push_back(numTargets); // allocate my position
+      allocated.push_back(numTargets - 1); // allocate my position
 
       for (Vertex i = 0; i < numTargets - 1; i++)
         unallocated.push_back(i);
@@ -129,8 +134,9 @@ Bidder::Iterate(void)
       winnerUpdated = false;
     }
 
-    dp.dprintf(LVL_MAX_VERB, "roundNum <= numNodes (%lu <= %lu)?\n", roundNumber, g->getNumVertices());
-    if (roundNumber <= g->getNumVertices())
+    dp.dprintf(LVL_MAX_VERB, "Number of unallocated targets remaining: %lu\n",
+        unallocated.size());
+    if (unallocated.size() > 0)
     {
       if (roundUpdated)
       { // Do round calculations for new round
