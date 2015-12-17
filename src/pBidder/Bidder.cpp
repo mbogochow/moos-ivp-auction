@@ -145,7 +145,7 @@ Bidder::Iterate(void)
       // Exit pBidder
       doNotify("EXITED_NORMALLY", "pBidder");
       // Ensure all data makes it to the MOOSDB
-      std::this_thread::sleep_for(std::chrono::seconds(10));
+//      std::this_thread::sleep_for(std::chrono::seconds(10));
       // OR
         // SetQuitOnFailedIterate(true);
         // ret = false;
