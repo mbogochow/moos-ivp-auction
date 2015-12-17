@@ -58,6 +58,8 @@ Bidder::OnNewMail(MOOSMSG_LIST &NewMail)
       std::string sTargets = msg.GetString();
       pathFromString(sTargets, targets);
 
+      targets.push_back(startPos);
+
       size_t numTargets = targets.size();
       dp.dprintf(LVL_MAX_VERB, "Parsed %lu targets from %s\n", numTargets,
           sTargets.c_str());
@@ -69,8 +71,6 @@ Bidder::OnNewMail(MOOSMSG_LIST &NewMail)
 
       g = new Graph(edges.data(), edges.size(), weights.data(), numTargets);
       dp.dprintf(LVL_MAX_VERB, "Generated Graph:\n%s\n", g->toString().c_str());
-
-      // TODO add me to the graph
 
       allocated.reserve(numTargets);
       unallocated.reserve(numTargets);
