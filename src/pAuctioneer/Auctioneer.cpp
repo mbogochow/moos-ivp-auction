@@ -100,9 +100,7 @@ Auctioneer::Iterate(void)
   {
     // Exit pAuctioneer
     doNotify("EXITED_NORMALLY", "pAuctioneer");
-    // Give the message some time to get there before closing
-    std::this_thread::sleep_for(std::chrono::seconds(10));
-    exit(0);
+    RequestQuit();
   }
 
   return ret;
