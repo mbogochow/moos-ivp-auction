@@ -150,8 +150,8 @@ Bidder::Iterate(void)
         // SetQuitOnFailedIterate(true);
         // ret = false;
       // OR
-        // RequestQuit();
-      exit(0);
+      RequestQuit();
+//      exit(0);
     }
   }
   else
