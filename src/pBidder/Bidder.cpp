@@ -60,7 +60,7 @@ Bidder::OnNewMail(MOOSMSG_LIST &NewMail)
 
       size_t numTargets = targets.size();
       dp.dprintf(LVL_MAX_VERB, "Parsed %lu targets from %s\n", numTargets,
-          sTargets);
+          sTargets.c_str());
 
       std::vector<Edge> edges;
       std::vector<mbogo_weight_t> weights;
