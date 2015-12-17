@@ -275,7 +275,7 @@ Bidder::performFinalCalc(void)
   dp.dprintf(LVL_MIN_VERB, "Final cost: %s\n",
       boost::lexical_cast<std::string>(path->getTotalCost(g->getGraph())).c_str());
 
-  // Send the path to the MOOSDB
+  // Send the path to the MOOSDB, cut out my start position
   doNotify(getPathVar(id),
       getPathVarVal(pathToString(pathPoints + 1, path->getLength() - 1)));
 

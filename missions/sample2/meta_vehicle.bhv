@@ -67,13 +67,15 @@ Behavior = BHV_Waypoint
   endflag   = AVOID = false
 
   // Configurations
-         speed = 2.0
+         speed = 1.0
         radius = 3.0
-     nm_radius = 15.0
+   slip_radius = 5.0
+     // nm_radius = 15.0
         points = $(START_POS)
        // repeat = 10
           lead = 8
   visual_hints = edge_color=$(VCOLOR), vertex_color=white
+  visual_hints = vertex_size=10
 }
 
 //----------------------------------------------
@@ -117,8 +119,8 @@ Behavior = BHV_AvoidCollision
          extrapolate = true
                decay = 30,60
 
-        pwt_outer_dist = 40
-        pwt_inner_dist = 20
+        pwt_outer_dist = 20
+        pwt_inner_dist = 10
         completed_dist = 100
      min_util_cpa_dist = 8
      max_util_cpa_dist = 25

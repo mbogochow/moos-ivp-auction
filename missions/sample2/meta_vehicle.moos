@@ -25,7 +25,7 @@ Processconfig = ANTLER
   Run = uFldNodeBroker   @ NewConsole = false
   Run = uLoadWatch       @ NewConsole = false
 
-  Run = uXMS            @ NewConsole = false
+  Run = uXMS             @ NewConsole = false
   Run = pBidder          @ NewConsole = true
 }
 
