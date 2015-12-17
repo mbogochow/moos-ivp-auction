@@ -277,7 +277,7 @@ Bidder::performFinalCalc(void)
 
   // Send the path to the MOOSDB
   doNotify(getPathVar(id),
-      getPathVarVal(pathToString(pathPoints, path->getLength())));
+      getPathVarVal(pathToString(pathPoints + 1, path->getLength() - 1)));
 
   delete sub;
   delete tree;
