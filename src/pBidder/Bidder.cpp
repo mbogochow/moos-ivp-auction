@@ -73,9 +73,11 @@ Bidder::OnNewMail(MOOSMSG_LIST &NewMail)
       dp.dprintf(LVL_MAX_VERB, "Generated Graph:\n%s\n", g->toString().c_str());
 
       allocated.reserve(numTargets);
-      unallocated.reserve(numTargets);
+      unallocated.reserve(numTargets - 1);
 
-      for (Vertex i = 0; i < numTargets; i++)
+      allocated.push_back(numTargets); // allocate my position
+
+      for (Vertex i = 0; i < numTargets - 1; i++)
         unallocated.push_back(i);
     }
     else if (key == MVAR_BID_START)
