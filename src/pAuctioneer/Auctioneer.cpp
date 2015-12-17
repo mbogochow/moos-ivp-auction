@@ -139,7 +139,6 @@ Auctioneer::OnStartUp(void)
       else
       {
         numTargets = getStringPathSize(targets);
-        numTargets += 1; // for the bidder's node
         doNotify(MVAR_BID_TARGETS, targets);
       }
 
