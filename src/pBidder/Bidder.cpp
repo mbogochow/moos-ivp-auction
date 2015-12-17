@@ -264,6 +264,9 @@ Bidder::performFinalCalc(void)
   // Get the coordinates of the vertices
   path->getLocations(targets.data(), pathPoints);
 
+  dp.dprintf(LVL_MIN_VERB, "Final cost: %s\n",
+      boost::lexical_cast<std::string>(path->getTotalCost(g->getGraph())).c_str());
+
   // Send the path to the MOOSDB
   doNotify(getPathVar(id),
       getPathVarVal(pathToString(pathPoints, path->getLength())));
