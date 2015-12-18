@@ -265,33 +265,52 @@ Bidder::performBiddingRound(void)
 void
 Bidder::performFinalCalc(void)
 {
-  // Do final cost calculation and submit path
-  Subgraph *sub = Subgraph::fromGraph(g, allocated);
-  SpanningTree *tree = SpanningTree::fromGraph(sub->getGraph());
-  Path *path = Path::fromTree(tree);
-  Point *pathPoints = new Point[path->getLength()];
-
-  // Debug output
-  DebugLevel LVL_FINAL_PATH = LVL_MID_VERB;
-  if (dp.isValidLevel(LVL_FINAL_PATH)) // extra check to avoid extra work
+  if (allocated.size() == 1)
   {
-    dp.dprintf(LVL_FINAL_PATH, "Final allocated:\n");
-    int count = 0;
-    for (std::vector<Vertex>::iterator it = allocated.begin();
-        it != allocated.end(); it++)
-    {
-      dp.dprintf(LVL_FINAL_PATH, "\tallocated[%i]:%s\n", count++,
-          boost::lexical_cast<std::string>(*it).c_str());
-    }
-    dp.dprintf(LVL_FINAL_PATH, "Final path:\n%s\n", path->toString().c_str());
+    // Didn't get any targets
+    doNotify(getVar(MVAR_COST, id), 0);
   }
+  else
+  {
+    // Do final cost calculation and submit path
+    Subgraph *sub = Subgraph::fromGraph(g, allocated);
+    SpanningTree *tree = SpanningTree::fromGraph(sub->getGraph());
+    Path *path = Path::fromTree(tree);
+    Point *pathPoints = new Point[path->getLength()];
 
-  // Convert the path indices to those in the origin graph
-  path->convertPath(sub->getParentIndices());
-  dp.dprintf(LVL_FINAL_PATH, "Converted path:\n%s\n", path->toString().c_str());
+    // Debug output
+    DebugLevel LVL_FINAL_PATH = LVL_MID_VERB;
+    if (dp.isValidLevel(LVL_FINAL_PATH)) // extra check to avoid extra work
+    {
+      dp.dprintf(LVL_FINAL_PATH, "Final allocated:\n");
+      int count = 0;
+      for (std::vector<Vertex>::iterator it = allocated.begin();
+          it != allocated.end(); it++)
+      {
+        dp.dprintf(LVL_FINAL_PATH, "\tallocated[%i]:%s\n", count++,
+            boost::lexical_cast<std::string>(*it).c_str());
+      }
+      dp.dprintf(LVL_FINAL_PATH, "Final path:\n%s\n", path->toString().c_str());
+    }
 
-  // Get the coordinates of the vertices
-  path->getLocations(targets.data(), pathPoints);
+    // Convert the path indices to those in the origin graph
+    path->convertPath(sub->getParentIndices());
+    dp.dprintf(LVL_FINAL_PATH, "Converted path:\n%s\n", path->toString().c_str());
+
+    // Get the coordinates of the vertices
+    path->getLocations(targets.data(), pathPoints);
+
+    // Send the path to the MOOSDB, cut out my start position
+    doNotify(getPathVar(id),
+        getPathVarVal(pathToString(pathPoints + 1, path->getLength() - 1)));
+
+    doNotify(getVar(MVAR_COST, id), path->getTotalCost(g->getGraph()));
+
+    delete sub;
+    delete tree;
+    delete path;
+    delete pathPoints;
+  }
 
   // Record end time
   struct timespec diff;
@@ -306,16 +325,6 @@ Bidder::performFinalCalc(void)
 
   // Send final stats
   doNotify(getVar(MVAR_TIME, id), timespec_to_ms(&diff));
-  doNotify(getVar(MVAR_COST, id), path->getTotalCost(g->getGraph()));
-
-  // Send the path to the MOOSDB, cut out my start position
-  doNotify(getPathVar(id),
-      getPathVarVal(pathToString(pathPoints + 1, path->getLength() - 1)));
-
-  delete sub;
-  delete tree;
-  delete path;
-  delete pathPoints;
 }
 
 bool
