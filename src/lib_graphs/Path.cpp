@@ -136,9 +136,9 @@ Path::printWithLocations(Point *locations, UndirectedGraph *g) const
   EdgeDescriptor e;
   bool found;
   std::vector<Vertex>::const_iterator it = path.begin();
-  Vertex prevNode = *it++;
   for (; it != path.end(); it++)
   {
+    Vertex prevNode = *it;
     tie(e, found) = edge(prevNode, *it, *g);
     std::cout << *it << " : (" << locations[path.data()[index]].first << ","
         << locations[path.data()[index]].second << ") : "
