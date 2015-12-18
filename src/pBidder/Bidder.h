@@ -19,6 +19,7 @@
 #include "../lib_auction/AuctionMOOSApp.h"
 
 #include <string>
+#include <time.h>
 
 /**
  * A bidder in an auction.
@@ -66,6 +67,10 @@ private:
 
   /** Debug level for bid calculation output */
   static const DebugLevel LVL_BID = LVL_MAX_VERB;
+
+  // Timing
+  struct timespec startTime;
+  struct timespec endTime;
 
   /**
    * Perform all calculations necessary for a bidding round and post the

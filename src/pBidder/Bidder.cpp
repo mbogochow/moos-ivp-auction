@@ -14,6 +14,7 @@
 #include "../lib_graphs/Path.h"
 #include "../lib_auction/AuctionDefs.h"
 #include "../lib_auction/DebugPrinter.h"
+#include "../lib_auction/time_util.h"
 
 #include "MBUtils.h"
 
@@ -22,6 +23,8 @@
 #include <algorithm> // std::remove
 #include <chrono>
 #include <thread>
+#include <time.h>
+#include <errno.h>
 
 Bidder::Bidder(void)
 {
@@ -140,8 +143,19 @@ Bidder::Iterate(void)
     {
       if (roundUpdated)
       { // Do round calculations for new round
-        performBiddingRound();
-        roundUpdated = false;
+        if (roundNumber == 1)
+        {
+          if (clock_gettime(CLOCK_REALTIME, &startTime) < 0)
+          {
+            perror("clock_gettime");
+            ret = false;
+          }
+        }
+        if (ret)
+        {
+          performBiddingRound();
+          roundUpdated = false;
+        }
       }
     }
     else
@@ -272,8 +286,20 @@ Bidder::performFinalCalc(void)
   // Get the coordinates of the vertices
   path->getLocations(targets.data(), pathPoints);
 
-  dp.dprintf(LVL_MIN_VERB, "Final cost: %s\n",
-      boost::lexical_cast<std::string>(path->getTotalCost(g->getGraph())).c_str());
+  // Record end time
+  struct timespec diff;
+  if (clock_gettime(CLOCK_REALTIME, &endTime) < 0)
+  {
+    perror("clock_gettime");
+  }
+  else
+  {
+    assert(timespec_subtract(&diff, &endTime, &startTime) != 1);
+  }
+
+  // Send final stats
+  doNotify(getVar(MVAR_TIME, id), timespec_to_ms(&diff));
+  doNotify(getVar(MVAR_COST, id), path->getTotalCost(g->getGraph()));
 
   // Send the path to the MOOSDB, cut out my start position
   doNotify(getPathVar(id),

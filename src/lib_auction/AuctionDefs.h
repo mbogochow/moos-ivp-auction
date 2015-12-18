@@ -15,6 +15,8 @@ const std::string MVAR_BID_TARGETS = "BID_TARGETS";
 const std::string MVAR_BID_HEADER  = "BID_V";
 const std::string MVAR_PATH_HEADER = "PATH_UPDATE_V";
 const std::string MVAR_PATH        = "points";
+const std::string MVAR_COST        = "FINAL_COST_V";
+const std::string MVAR_TIME        = "TOTAL_TIME_V";
 
 typedef struct WinningBid
 {
