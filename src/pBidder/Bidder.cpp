@@ -216,7 +216,7 @@ Bidder::performBiddingRound(void)
     }
     else
     {
-      sub = g->getSubgraph(possibleAllocation);
+      sub = Subgraph::fromGraph(g, possibleAllocation);
       dp.dprintf(LVL_BID, "Subgraph:\n%s\n", sub->toString().c_str());
 
       tree = SpanningTree::fromGraph(sub->getGraph());
