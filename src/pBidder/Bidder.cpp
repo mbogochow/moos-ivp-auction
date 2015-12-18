@@ -227,7 +227,7 @@ Bidder::performBiddingRound(void)
 
       if (dp.isValidLevel(LVL_BID))
       {
-        dp.dprintf(LVL_BID, "Path Locations:%s\n",
+        dp.dprintf(LVL_BID, "Path Locations:\n%s\n",
             path->toStringWithLocations(targets.data()).c_str());
       }
 
