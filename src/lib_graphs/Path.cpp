@@ -64,6 +64,14 @@ Path::fromPair(std::pair<Vertex, Vertex> path)
   return newPath;
 }
 
+static mbogo_weight_t getWeight(UndirectedGraph * const g, Vertex v,
+    EdgeDescriptor e)
+{
+  typename boost::property_map<UndirectedGraph, boost::edge_weight_t >::type
+      weight = boost::get(boost::edge_weight, *g);
+  return boost::get(weight, e);
+}
+
 mbogo_weight_t
 Path::getTotalCost(UndirectedGraph *const g)
 {
@@ -74,8 +82,6 @@ Path::getTotalCost(UndirectedGraph *const g)
 
   EdgeDescriptor e;
   bool found;
-  typename boost::property_map<UndirectedGraph, boost::edge_weight_t >::type
-    weight = boost::get(boost::edge_weight, *g);
   std::vector<Vertex>::iterator it = path.begin();
   Vertex prevNode = *it++;
 
@@ -83,7 +89,7 @@ Path::getTotalCost(UndirectedGraph *const g)
   {
     tie(e, found) = edge(prevNode, *it, *g);
 //    std::cout << "weight(" << prevNode << "," << *it << "):" << boost::get(weight, e) << std::endl;
-    cost += boost::get(weight, e);
+    cost += getWeight(g, *it, e);
     prevNode = *it;
   }
 
@@ -124,14 +130,19 @@ Path::print(void) const
 }
 
 void
-Path::printWithLocations(Point *locations) const
+Path::printWithLocations(Point *locations, UndirectedGraph *g) const
 {
   int index = 0;
-  for (std::vector<Vertex>::const_iterator it = path.begin(); it != path.end();
-      it++)
+  EdgeDescriptor e;
+  bool found;
+  std::vector<Vertex>::const_iterator it = path.begin();
+  Vertex prevNode = *it++;
+  for (; it != path.end(); it++)
   {
+    tie(e, found) = edge(prevNode, *it, *g);
     std::cout << *it << " : (" << locations[path.data()[index]].first << ","
-        << locations[path.data()[index]].second << ")" << std::endl;
+        << locations[path.data()[index]].second << ") : "
+        << getWeight(g, *it, e) << std::endl;
     index += 1;
   }
 }
@@ -151,13 +162,13 @@ Path::toString(void) const
 }
 
 std::string
-Path::toStringWithLocations(Point *locations) const
+Path::toStringWithLocations(Point *locations, UndirectedGraph *g) const
 {
   std::ostringstream os;
   std::streambuf *coutbuf = std::cout.rdbuf();
   std::cout.rdbuf(os.rdbuf());
 
-  printWithLocations(locations);
+  printWithLocations(locations, g);
 
   std::cout.rdbuf(coutbuf);
 

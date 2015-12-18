@@ -39,8 +39,8 @@ public:
   /** Print the path to std:cout */
   void print(void) const;
 
-  /** Print the path with locations to std:cout */
-  void printWithLocations(Point *locations) const;
+  /** Print the path with locations and weights to std:cout */
+  void printWithLocations(Point *locations, UndirectedGraph *g) const;
 
   /**
    * Convert the path to a string with the same formatting as the print
@@ -52,7 +52,7 @@ public:
    * Convert the path to a string with the same formatting as the
    * printWithLocations function.
    */
-  std::string toStringWithLocations(Point *locations) const;
+  std::string toStringWithLocations(Point *locations, UndirectedGraph *g) const;
 
   /**
    * Get the locations of the vertices along the path. Assumes locations size

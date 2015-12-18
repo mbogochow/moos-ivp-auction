@@ -228,7 +228,7 @@ Bidder::performBiddingRound(void)
       if (dp.isValidLevel(LVL_BID))
       {
         dp.dprintf(LVL_BID, "Path Locations:\n%s\n",
-            path->toStringWithLocations(targets.data()).c_str());
+            path->toStringWithLocations(targets.data(), g->getGraph()).c_str());
       }
 
       cost = path->getTotalCost(g->getGraph());

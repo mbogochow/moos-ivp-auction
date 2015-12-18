@@ -52,6 +52,4 @@ int nthTriangularNumber(int n);
 void connectEdges(std::vector<Point> targets, std::vector<Edge> &edges,
     std::vector<mbogo_weight_t> &weights);
 
-void fixTargets(std::vector<Point> targets);
-
 #endif /*AUCTION_DEFS_H_*/
