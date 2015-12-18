@@ -181,7 +181,7 @@ Bidder::performBiddingRound(void)
   // Bidding round
   Bid currentBid = std::make_pair(MAX_VERTEX, MAX_WEIGHT);
 
-  Graph *sub;
+  Subgraph *sub;
 
   // Iterate through unallocated nodes to find bid
   for (std::vector<Vertex>::iterator t = unallocated.begin();
@@ -223,6 +223,7 @@ Bidder::performBiddingRound(void)
       dp.dprintf(LVL_BID, "Spanning Tree:\n%s\n", tree->toString().c_str());
 
       path = Path::fromTree(tree);
+      path->convertPath(sub->getParentIndices());
       dp.dprintf(LVL_BID, "Path:\n%s\n", path->toString().c_str());
 
       if (dp.isValidLevel(LVL_BID))
