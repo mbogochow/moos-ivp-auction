@@ -110,7 +110,7 @@ Bidder::OnNewMail(MOOSMSG_LIST &NewMail)
       winnerUpdated = true;
       winningBid = winningBidFromString(msg.GetString());
       dp.dprintf(LVL_MIN_VERB, "Got %s mail: %s\n", MVAR_BID_WINNER.c_str(),
-          winningBid);
+          winningBidToString(winningBid).c_str());
     }
   }
 
@@ -224,6 +224,12 @@ Bidder::performBiddingRound(void)
 
       path = Path::fromTree(tree);
       dp.dprintf(LVL_BID, "Path:\n%s\n", path->toString().c_str());
+
+      if (dp.isValidLevel(LVL_BID))
+      {
+        dp.dprintf(LVL_BID, "Path Locations:%s\n",
+            path->toStringWithLocations(targets.data()).c_str());
+      }
 
       cost = path->getTotalCost(g->getGraph());
       bid = cost - rtc;

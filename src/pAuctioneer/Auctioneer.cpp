@@ -62,10 +62,12 @@ Auctioneer::Iterate(void)
 {
   bool ret = AuctionMOOSApp::Iterate();
 
-  dp.dprintf(LVL_MAX_VERB, "roundNum <= numNodes (%lu <= %lu)?\n", roundNumber, numTargets);
+  dp.dprintf(LVL_MAX_VERB, "roundNum <= numNodes (%lu <= %lu)?\n", roundNumber,
+      numTargets);
   if (roundNumber <= numTargets)
   {
-    dp.dprintf(LVL_MID_VERB, "numReceivedBids=%i\n", numRecvdBids);
+    dp.dprintf(LVL_MID_VERB, "numReceivedBids=%lu / %lu\n", numRecvdBids,
+        numBidders);
 
     if (roundNumber == 0)
       doNotify(MVAR_BID_START, ++roundNumber);

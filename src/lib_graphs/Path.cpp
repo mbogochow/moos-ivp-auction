@@ -123,6 +123,19 @@ Path::print(void) const
   }
 }
 
+void
+Path::printWithLocations(Point *locations) const
+{
+  int index = 0;
+  for (std::vector<Vertex>::const_iterator it = path.begin(); it != path.end();
+      it++)
+  {
+    std::cout << *it << " : (" << locations[path.data()[index]].first << ","
+        << locations[path.data()[index]].second << ")" << std::endl;
+    index += 1;
+  }
+}
+
 std::string
 Path::toString(void) const
 {
@@ -136,3 +149,18 @@ Path::toString(void) const
 
   return os.str();
 }
+
+std::string
+Path::toStringWithLocations(Point *locations) const
+{
+  std::ostringstream os;
+  std::streambuf *coutbuf = std::cout.rdbuf();
+  std::cout.rdbuf(os.rdbuf());
+
+  printWithLocations(locations);
+
+  std::cout.rdbuf(coutbuf);
+
+  return os.str();
+}
+
