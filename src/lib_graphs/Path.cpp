@@ -136,13 +136,16 @@ Path::printWithLocations(Point *locations, UndirectedGraph *g) const
   EdgeDescriptor e;
   bool found;
   std::vector<Vertex>::const_iterator it = path.begin();
-  for (; it != path.end(); it++)
+  Vertex prevNode = *it;
+  for (; it != path.end(); prevNode = *it++)
   {
-    Vertex prevNode = *it;
-    tie(e, found) = edge(prevNode, *it, *g);
+    if (prevNode != *it)
+      tie(e, found) = edge(prevNode, *it, *g);
     std::cout << *it << " : (" << locations[path.data()[index]].first << ","
-        << locations[path.data()[index]].second << ") : "
-        << getWeight(g, *it, e) << std::endl;
+        << locations[path.data()[index]].second << ") : ";
+    if (prevNode != *it)
+        std::cout << getWeight(g, *it, e);
+    std::cout << std::endl;
     index += 1;
   }
 }
